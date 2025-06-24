@@ -1,0 +1,6 @@
+\section{NIST SP 800-90B Errata}
+
+The Most Common Value algorithm example rounds early, causing the min-entropy to be overestimated by 0.02.
+
+Step 7 of the Compression Estimate algorithm references L, the length of the entire bitstring, but if using L, the 
+algorithm breaks. Use v + d instead.
