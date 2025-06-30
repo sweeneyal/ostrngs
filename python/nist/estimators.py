@@ -230,25 +230,27 @@ def tTupleEstimate(dataset, domain, demo=False):
     L = len(dataset)
     t = 1
     while True:
-        subset = []
+        subset = [None for _ in range(L)]
         for i in range(0, L):
             if i + t >= L:
                 break
-            subset.append(tuple(dataset[i:i+t]))
+            subset[i] = tuple(dataset[i:i+t])
         unique = list(set(subset))
-        count  = []
+        count  = [0 for _ in range(len(unique))]
         for i in range(len(unique)):
-            count.append(subset.count(unique[i]))
+            if unique[i] == None:
+                continue
+            count[i] = subset.count(unique[i])
         if cutoff <= max(count):
             Q.append(max(count))
             t += 1
         else:
             break
-    P_max = []
+    P_max = [0 for _ in range(len(Q))]
     for i in range(len(Q)):
         # i+1 to convert from zero-indexed to one-indexed
         P = Q[i]/(L-(i+1)+1)
-        P_max.append(P**(1/(i+1)))
+        P_max[i] = (P**(1/(i+1)))
     p_max = max(P_max)
     p_u = min([1, p_max + 2.576*sqrt((p_max*(1-p_max))/(L-1))])
     return -log2(p_u)
@@ -653,8 +655,8 @@ suite = [
     CollisionEstimate, 
     MarkovEstimate, 
     #CompressionEstimate, 
-    tTupleEstimate,
-    LongestRepeatedSubstringEstimate,
+    #tTupleEstimate,
+    #LongestRepeatedSubstringEstimate,
     MultiMCWEstimate,
     LagPredictionEstimate,
     MultiMMCEstimate,

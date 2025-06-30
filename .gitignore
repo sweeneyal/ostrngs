@@ -2,3 +2,4 @@ docs/latex/*
 !docs/latex/*.tex
 
 **__pycache__**
+*.venv
