@@ -1,0 +1,17 @@
+\section{Introduction}
+
+Secure true random number generation is an important problem for the security of communication, 
+in order to ensure the fundamental requirements of confidentiality, integrity, availability, and
+non-repudiation. Random numbers are used extensively in cryptography, such as the recent
+post-quantum cryptographic public key encryption algorithm, ML-KEM. The widespread need for random
+number generation has led to dozens of publications proposing implementations of entropy sources
+based on metastability, jitter, thermal noise, and chaos. This work seeks to catalog several of these 
+entropy sources, discuss their implementations, and provide open access to all entropy sources in this 
+catalog. In addition to the implementation source, a demonstration platform targeting common AMD FPGA 
+platforms is provided in parallel for further evaluation of each entropy source's implementation. Finally, 
+min-entropy estimates using NIST SP 800-90B on each entropy source are performed, provided, and discussed
+at length.
+
+% TODO: original implementations each get a tex file
+% TODO: build overal demonstration platform (TrngTestbed?) that targets Arty A7 and Genesys 2
+% TODO: tabulate implementation min entropy if listed, and provide captured min entropy values

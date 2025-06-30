@@ -1,4 +1,4 @@
-\section{NIST SP 800-90B}
+\subsection{NIST SP 800-90B}
 
 The NIST Special Publication 800-90B is the second in a series of publications regarding the design and implementation
 of random bit generators (RBGs). Whereas SPs 800-90A and 800-90C describe the design and validation of deterministic 
@@ -23,12 +23,12 @@ the system can perform. These are not given as requirements, since entropy sourc
 
 \begin{enumerate}
     \item \textbf{GetEntropy} - a mechanism to retrieve an amount of entropy.
-    \item \textbf{GetNoise} - a mechanism to retrieve raw, post-digitization samples of the noise source for validation 
+    \item \textbf{GetNoise} - a mechanism to retrieve raw samples of the noise source for validation 
         or health testing.
     \item \textbf{HealthTest} - a mechanism to request that the entropy source perform health tests.
 \end{enumerate}
 
-\subsection{Data Collection and Validation}
+\subsubsection{Data Collection and Validation}
 
 The publication specifies three requirements regarding data collection, first two are mutually exclusive depending on 
 the inclusion of a conditioning component, but essentially require the collection of 1 000 000 samples for validation.
@@ -42,7 +42,7 @@ The specification further breaks down the validation testing into the \textit{in
 generates need to be distributed according to a uniform distribution, that is, no symbol can be more commonly occurring
 than any other, and each symbol must be independent of any other symbol.
 
-\subsection{Determining Validation Pathway}
+\subsubsection{Determining Validation Pathway}
 
 In order to determine the correct path to take for validation, the noise source must be tested to see whether the IID
 assumption holds. Several tests are provided and are categorized into two categories, namely permutation testing and 
@@ -72,7 +72,7 @@ The permutation tests are listed as follows:
 The independence and goodness-of-fit tests depend on the type of input data, as the mechanisms change based on whether
 the range of outputs from a given noise source is binary or non-binary.
 
-\subsection{Validation Tests}
+\subsubsection{Validation Tests}
 
 The primary metric the NIST SP 800-90B tests estimate is the min-entropy metric, which fundamentally describes how 
 difficult it is for an adversary to predict the output of a given entropy source. As a result, several tests are 
@@ -96,6 +96,6 @@ The min-entropy estimators provided are listed as follows:
     \item LZ78Y Prediction Estimate
 \end{enumerate}
 
-\subsection{Health Tests}
+\subsubsection{Health Tests}
 
 % Note: revisit health tests here

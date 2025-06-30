@@ -1,0 +1,15 @@
+\subsection{Mesh-Coupled Xor TRNG}
+
+The Mesh-Coupled XOR TRNG proposed by Lu et. al. is an autonomous boolean network designed 
+based on first principles established by Gong et. al. that fundamentally uses several ring oscillators,
+coupled XOR gates, and a mesh network topology to generate a chaotic-like entropy source. 
+The autonomous boolean network mechanism, similar to work done by Rosin and Zhang and collaborators, 
+allows for the use of nonlinear dynamics and chaos to expose the hardware fabric's manufacturing 
+variance as an entropy source. 
+
+The entropy source here is derived from the unpredictability of boolean chaos. As chaos is defined by
+its sensitivity to initial conditions, the initial conditions are unknowable with infinite precision,
+and as such, a security system with a chaotic entropy source can be assumed to be more secure. However,
+proving chaotic behavior of a system is a hard problem, so no claims are made that chaos is guaranteed
+present, though it is assumed due to its similarity to work by Rosin and Zhang.
+

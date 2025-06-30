@@ -1,0 +1,15 @@
+\subsection{Open-Loop Metastable TRNG}
+
+The open-loop metastable TRNG proposed by Ben-Romdhane et. al. is designed such that a cascade
+of delay elements on the clock and data path can be used to produce a
+single bit of randomness by forcing a flop at the end to be metastable. Several 
+implementations of this concept have been implemented within
+the literature at [add sources here], but the contribution of Ben-Romdhane et. al. was
+to implement a version of this concept targeting ASICs. 
+
+The primary mechanism for inducing metastability involves using two multiplexor chains
+to calibrate the TRNG such that the delay induced through each multiplexor chain causes
+several of the flops in the sampling flop chain to go metastable. This is a similar 
+concept to oscillator-based TRNGs, as they ideally capture transition points within the
+oscillator signal, except that the premise here is less about the jitter of the signal,
+but rather the flop's internal sampling structure settling finally on '0' or '1'. 

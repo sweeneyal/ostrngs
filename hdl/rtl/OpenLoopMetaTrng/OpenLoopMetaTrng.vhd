@@ -2,7 +2,7 @@ library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
 
-library ostrng;
+library ostrngs;
 
 entity OpenLoopMetaTrng is
     generic (
@@ -27,7 +27,7 @@ architecture rtl of OpenLoopMetaTrng is
     signal merge_d : std_logic := '0';
 begin
     
-    eCascade : entity ostrng.CoarseCascade
+    eCascade : entity ostrngs.CoarseCascade
     generic map (
         cNumStages => cNumCoarseStages,
         cSimulatedDelay_ps => cSimCoarseDelay_ps

@@ -1,0 +1,43 @@
+\documentclass[conference]{IEEEtran}
+
+\usepackage{amsmath} % \usepackage is a command that allows you to add functionality to your LaTeX code
+\usepackage{graphicx}
+\usepackage{placeins}
+\usepackage{tikz}
+\usetikzlibrary{shapes.geometric}
+\usetikzlibrary{arrows.meta,arrows}
+\usetikzlibrary{automata,chains}
+\usetikzlibrary{calc}
+
+\usepackage{mathtools,amssymb}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
+\usepackage{cuted}
+\setlength\stripsep{3pt plus 1pt minus 1pt}
+
+\providecommand{\lxor}{\oplus}
+
+\title{Walk by Faith: A Catalog of Open-Source Entropy Sources} % Sets article title
+\author{Andrew Sweeney} % Sets authors name
+\date{\today} % Sets date for date compiled
+
+% The preamble ends with the command \begin{document}
+\begin{document} % All begin commands must be paired with an end command somewhere
+    \maketitle % creates title using information in preamble (title, author, date)
+    
+    \begin{abstract}
+        TRNGs are a fundamental component in security systems, though often are proprietary and closed source.
+        The impact cost of a vulnerability in a TRNG's entropy source, especially one integrated on chip, can 
+        often be astronomical. Meanwhile, open-source systems have the benefit of additional scrutiny and 
+        availability, reducing cost while potentially increasing security, benefitting the consumer. This
+        paper provides a catalog of open-source implementations of entropy sources designed from varying 
+        first principles implemented on an AMD FPGA, providing a first step toward open-source secure random 
+        number generation. 
+    \end{abstract}
+
+    \input{01_introduction.tex}
+
+    \input{02_evaluation.tex}
+
+    \input{03_catalog.tex}
+
+\end{document} % This is the end of the document

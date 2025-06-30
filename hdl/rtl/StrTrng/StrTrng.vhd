@@ -2,7 +2,7 @@ library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
 
-library ostrng;
+library ostrngs;
 
 entity StrTrng is
     generic (
@@ -11,8 +11,9 @@ entity StrTrng is
     port (
         i_clk    : in std_logic;
         i_resetn : in std_logic;
+        i_mode   : in std_logic;
         i_set    : in std_logic_vector(cNumStages - 1 downto 0);
-        o_rbit   : out std_logic
+        o_rng    : out std_logic
     );
 end entity StrTrng;
 
@@ -22,10 +23,11 @@ architecture rtl of StrTrng is
     signal merge_c : std_logic := '0';
 begin
     
-    eStr : entity ostrng.SelfTimedRing
+    eStr : entity ostrngs.SelfTimedRing
     generic map (
         cNumStages => cNumStages
     ) port map (
+        i_mode => i_mode,
         i_set => i_set,
         o_c   => c
     );
