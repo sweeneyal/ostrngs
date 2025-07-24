@@ -14,9 +14,35 @@ entity MeshCoupledXor is
 end entity MeshCoupledXor;
 
 architecture rtl of MeshCoupledXor is
+    signal ro     : std_logic_vector(7 downto 0)  := (others => '0');
     signal in_cx  : std_logic_vector(23 downto 0) := (others => '0');
     signal out_cx : std_logic_vector(23 downto 0) := (others => '0');
     signal xor_cx : std_logic_vector(23 downto 0) := (others => '0');
+
+    signal bc1 : std_logic := '0';
+    signal bc2 : std_logic := '0';
+    signal ab2 : std_logic := '0';
+    signal ab1 : std_logic := '0';
+    signal bf1 : std_logic := '0';
+    signal bf2 : std_logic := '0';
+    signal cd2 : std_logic := '0';
+    signal cd1 : std_logic := '0';
+    signal ad1 : std_logic := '0';
+    signal ad2 : std_logic := '0';
+    signal ae1 : std_logic := '0';
+    signal ae2 : std_logic := '0';
+    signal ef1 : std_logic := '0';
+    signal ef2 : std_logic := '0';
+    signal dh1 : std_logic := '0';
+    signal dh2 : std_logic := '0';
+    signal eh1 : std_logic := '0';
+    signal eh2 : std_logic := '0';
+    signal cg1 : std_logic := '0';
+    signal cg2 : std_logic := '0';
+    signal gh2 : std_logic := '0';
+    signal gh1 : std_logic := '0';
+    signal fg1 : std_logic := '0';
+    signal fg2 : std_logic := '0';
 begin
     
     o_taps <= out_cx;

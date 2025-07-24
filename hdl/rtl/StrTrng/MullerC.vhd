@@ -13,16 +13,18 @@ entity MullerC is
 end entity MullerC;
 
 architecture rtl of MullerC is
-
+    signal c : std_logic := '0';
 begin
     
-    MullerCLatch: process(i_mode = '1', i_f, i_r)
+    MullerCLatch: process(i_mode, i_f, i_r)
     begin
         if (i_mode = '1') then
-            o_c <= i_set;
+            c <= i_set;
         elsif ((i_f xor i_r) = '1') then
-            o_c <= i_f;
+            c <= i_f;
         end if;
     end process MullerCLatch;
+
+    o_c <= c;
     
 end architecture rtl;

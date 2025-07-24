@@ -213,6 +213,11 @@ def CompressionEstimate(dataset, domain=[0, 1], demo=False):
     # TODO: Add logic handling no solution. Unsure what no solution looks like (out of bounds?)
     return -log2(p)/b
 
+import fast_estimators as fe
+
+def FastCompressionEstimate(dataset, domain=[0, 1], demo=False):
+    return fe.compression_estimate(dataset, demo)
+
 # --------------------------------------------------------------------------------------------
 
 def tTupleEstimate(dataset, domain, demo=False):
@@ -232,7 +237,7 @@ def tTupleEstimate(dataset, domain, demo=False):
     while True:
         subset = [None for _ in range(L)]
         for i in range(0, L):
-            if i + t >= L:
+            if i + t > L:
                 break
             subset[i] = tuple(dataset[i:i+t])
         unique = list(set(subset))
@@ -254,6 +259,9 @@ def tTupleEstimate(dataset, domain, demo=False):
     p_max = max(P_max)
     p_u = min([1, p_max + 2.576*sqrt((p_max*(1-p_max))/(L-1))])
     return -log2(p_u)
+
+def FastTTupleEstimate(dataset, domain, demo=False):
+    return fe.ttuple_estimate(dataset, demo)
 
 # --------------------------------------------------------------------------------------------
 
@@ -654,8 +662,8 @@ suite = [
     MostCommonValueEstimate, 
     CollisionEstimate, 
     MarkovEstimate, 
-    #CompressionEstimate, 
-    #tTupleEstimate,
+    FastCompressionEstimate, 
+    FastTTupleEstimate,
     #LongestRepeatedSubstringEstimate,
     MultiMCWEstimate,
     LagPredictionEstimate,
@@ -687,8 +695,14 @@ if __name__ == "__main__":
     e = CompressionEstimate(S, demo=True)
     print(e)
 
+    e = FastCompressionEstimate(S, demo=True)
+    print(e)
+
     S = [2, 2, 0, 1, 0, 2, 0, 1, 2, 1, 2, 0, 1, 2, 1, 0, 0, 1, 0, 0, 0]
     e = tTupleEstimate(S, domain=[0,1,2], demo=True)
+    print(e)
+
+    e = FastTTupleEstimate(S, domain=[0,1,2], demo=True)
     print(e)
 
     S = [2, 2, 0, 1, 0, 2, 0, 1, 2, 1, 2, 0, 1, 2, 1, 0, 0, 1, 0, 0, 0]
