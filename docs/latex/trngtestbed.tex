@@ -1,0 +1,24 @@
+\subsection{TRNG Testbed}
+
+At a fundamental level, every entropy source needs to be verifiable as a standalone implementation as well as be 
+integrable into a given platform. What the TRNG Testbed IP seeks to do is:
+
+\begin{enumerate}
+    \item Provide standard interfaces to all entropy sources, so that testing and integration is seamless.
+    \item Extend the interfaces to allow an instantiation of several entropy sources of various types
+        for evaluation of several implementations, either of like entropy sources or of different entropy sources
+        on the same platform.
+\end{enumerate}
+
+Two implementations are provided with the open-source catalog; the TRNG Testbed as a platform, and as an IP core. The 
+platform variant targeting the Digilent Genesys 2 is designed to provide 8 different instantiations of entropy sources
+that are sampled at implementation-defined clock frequencies. Once connected to a host computer and programmed, the 
+onboard processor listens over UART for the desired test to be run, either the million-consecutive-samples test or the 
+startup test. The platform then takes the generated entropy samples and pipes them through a sample counter to the 
+onboard DDR3 RAM. The NIST SP 800-90B minimum required number of consecutive samples is collected, and then streamed 
+back to the host computer to be analyzed.
+
+The IP core implementation is provided as the raw RTL files. The interface to the core is simple, and streams samples 
+from the selected entropy source to whatever downstream logic is added by the user. This allows the user to have 
+selectable entropy sources for the same application, such as backups if the health of an entropy source becomes 
+degraded.

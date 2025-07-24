@@ -1,5 +1,6 @@
 from vunit import VUnit
 import pathlib
+import os
 
 def get_vhdl_files(dir, recursive=False):
     directory = pathlib.Path(dir)
@@ -18,6 +19,10 @@ vu.add_vhdl_builtins()
 vu.add_osvvm()
 # or
 # vu.add_verilog_builtins()
+
+# xilinx-vivado primitives need to be installed and put in an environment variable of the same name to run
+# these tests, as Xilinx primitives are used in some entities.
+vu.add_external_library("unisim", os.environ['XILINX_UNISIM_PATH'])
 
 ndsmd = vu.add_library("ostrngs")
 files = get_vhdl_files('./hdl/rtl', recursive=True)
