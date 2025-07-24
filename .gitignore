@@ -5,3 +5,10 @@ docs/latex/*
 *.venv
 
 data
+
+scratch
+
+*.so
+.vscode
+
+vunit_out

@@ -6,7 +6,8 @@ library ostrngs;
 
 entity SelfTimedRing is
     generic (
-        cNumStages : natural := 45
+        cNumStages : natural := 45;
+        cSim_TransportDelay_ps : natural := 100
     );
     port (
         i_mode : in std_logic;
@@ -21,10 +22,10 @@ architecture rtl of SelfTimedRing is
     signal c : std_logic_vector(cNumStages - 1 downto 0) := (others => '0');
 begin
     
-    f <= transport c(cNumStages - 2 downto 0) & c(cNumStages - 1) after 100 ps;
-    r <= transport c(0) & c(cNumStages - 1 downto 1) after 100 ps; -- Not sure if this needs to be inverted or not?
+    f <= transport c(cNumStages - 2 downto 0) & c(cNumStages - 1) after cSim_TransportDelay_ps * 1 ps;
+    r <= transport c(0) & c(cNumStages - 1 downto 1) after cSim_TransportDelay_ps * 1 ps;
 
-    gStrGeneration: for g_ii in 0 to cNumStages - 2 generate
+    gStrGeneration: for g_ii in 0 to cNumStages - 1 generate
         eMuller : entity ostrngs.MullerC
         port map (
             i_mode => i_mode,

@@ -6,6 +6,7 @@ filename = "./libraries/SP800-90B_EntropyAssessment/bin/truerand_1bit.bin"
 
 with open(filename, "rb") as f:
     S = f.read()
+    S = list(S)
 
     estimates = {}
     for estimator in nist.suite:

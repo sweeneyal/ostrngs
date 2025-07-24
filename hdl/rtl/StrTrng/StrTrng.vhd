@@ -13,16 +13,29 @@ entity StrTrng is
         i_resetn : in std_logic;
         i_mode   : in std_logic;
         i_set    : in std_logic_vector(cNumStages - 1 downto 0);
-        o_rng    : out std_logic
+        o_rng    : out std_logic_vector(0 downto 0)
     );
 end entity StrTrng;
 
 architecture rtl of StrTrng is
+    signal mode    : std_logic := '0';
+    signal set     : std_logic_vector(cNumStages - 1 downto 0) := (others => '0');
     signal c       : std_logic_vector(cNumStages - 1 downto 0) := (others => '0');
     signal c_reg   : std_logic_vector(cNumStages - 1 downto 0) := (others => '0');
     signal merge_c : std_logic := '0';
 begin
     
+    ModeAndSetCtrl: process(i_resetn, i_mode, i_set)
+    begin
+        if (i_resetn = '0') then
+            mode <= '1';
+            set  <= (others => '0');
+        else
+            mode <= i_mode;
+            set  <= i_set; 
+        end if;
+    end process ModeAndSetCtrl;
+
     eStr : entity ostrngs.SelfTimedRing
     generic map (
         cNumStages => cNumStages
@@ -57,9 +70,9 @@ begin
     begin
         if rising_edge(i_clk) then
             if (i_resetn = '0') then
-                o_rbit <= '0';
+                o_rng(0) <= '0';
             else
-                o_rbit <= merge_c;
+                o_rng(0) <= merge_c;
             end if;
         end if;
     end process FinalSampler;
