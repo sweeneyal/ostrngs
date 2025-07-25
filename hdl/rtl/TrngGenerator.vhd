@@ -24,6 +24,8 @@ entity TrngGenerator is
 
         -- entropy source selection
         i_rng_addr  : in std_logic_vector(7 downto 0);
+        -- entropy source sample clock
+        o_rng_clk   : out std_logic;
         -- entropy sample output 
         o_rng_data  : out std_logic_vector(31 downto 0);
         -- indicator that entropy sample is valid
@@ -56,13 +58,16 @@ architecture rtl of TrngGenerator is
         padded(cEntropySource07, 256)
     );
 
-
-
     type rng_matrix_t is array (0 to cNumEntropySources - 1) of std_logic_vector(31 downto 0);
 
     signal rng       : rng_matrix_t := (others => (others => '0'));
     signal rng_valid : std_logic_vector(cNumEntropySources - 1 downto 0) := (others => '0');
+
+    signal clk_mcx    : std_logic := '0';
+    signal resetn_mcx : std_logic := '0';
 begin
+
+    -- Add clock mux here
     
     o_rng_data  <= rng(to_integer(unsigned(i_rng_addr)));
     o_rng_valid <= rng_valid(to_integer(unsigned(i_rng_addr)));
@@ -71,10 +76,13 @@ begin
         gMeshCoupledXor: if (cEntropySources(g_ii) = padded("MeshCoupledXor", 256)) generate
             signal local_rng : std_logic_vector(5 downto 0) := (others => '0');
         begin
+            
+            -- Convert reset to domain of entropy source
+
             eMeshCoupledXor : entity ostrngs.MeshCoupledXor
             port map (
-                i_clk    => i_clk,
-                i_resetn => i_resetn,
+                i_clk    => clk_mcx,
+                i_resetn => resetn_mcx,
                 o_rng    => local_rng
             );
 

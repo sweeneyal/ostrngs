@@ -24,15 +24,26 @@ entity TrngTestbed is
 
         -- entropy source selection
         i_rng_addr  : in std_logic_vector(7 downto 0);
-        -- entropy sample output 
+        -- entropy sample clock
+        o_rng_clk   : out std_logic;
+        -- entropy sample output synchronous to o_rng_clk
         o_rng_data  : out std_logic_vector(31 downto 0);
-        -- indicator that entropy sample is valid
+        -- indicator that entropy sample on rng_data is valid
         o_rng_valid : out std_logic
     );
 end entity TrngTestbed;
 
 architecture rtl of TrngTestbed is
 begin
+
+    -- By default, only the MCX entropy source is supported. Other entropy sources
+    -- require different clock, which means support for either several clocks, 
+    -- a single dynamic clock, or other solution needs to be implemented.
+    -- Is there any major issue with outputting a dynamic clock? Essentially muxing between the implemented clocks
+    -- based on i_rng_addr, thereby allowing the clock to be used for downstream logic? 
+    -- Its possible with bufgctrls according to 
+    -- https://docs.amd.com/r/2023.1-English/ug949-vivado-design-methodology/Clock-Multiplexing
+    -- but is it recommended?
 
     eTrngs : entity ostrngs.TrngGenerator
     generic map (
@@ -50,6 +61,7 @@ begin
         i_resetn => i_resetn,
 
         i_rng_addr  => i_rng_addr,
+        o_rng_clk   => o_rng_clk,
         o_rng_data  => o_rng_data,
         o_rng_valid => o_rng_valid
     );
