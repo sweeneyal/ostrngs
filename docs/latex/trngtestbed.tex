@@ -22,3 +22,7 @@ The IP core implementation is provided as the raw RTL files. The interface to th
 from the selected entropy source to whatever downstream logic is added by the user. This allows the user to have 
 selectable entropy sources for the same application, such as backups if the health of an entropy source becomes 
 degraded.
+
+In addition, the TRNG Testbed IP core allows selection of desired clock frequency. Several TRNGs have a range of clocks
+the source authors have identified as optimal, but the dynamic selection of clock frequency has the added benefit of
+providing local, per-entropy-source optimization. 

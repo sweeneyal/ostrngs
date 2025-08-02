@@ -1,3 +1,6 @@
+-----------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------
+
 library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
@@ -6,7 +9,7 @@ library ostrngs;
 
 entity TrngTestbed is
     generic (
-        cNumEntropySources : positive range 1 to 255 := 8;
+        cNumEntropySources : positive range 1 to 8 := 8;
         cEntropySource00   : string := "MeshCoupledXor";
         cEntropySource01   : string := "MeshCoupledXor";
         cEntropySource02   : string := "MeshCoupledXor";
@@ -29,21 +32,27 @@ entity TrngTestbed is
         -- entropy sample output synchronous to o_rng_clk
         o_rng_data  : out std_logic_vector(31 downto 0);
         -- indicator that entropy sample on rng_data is valid
-        o_rng_valid : out std_logic
+        o_rng_valid : out std_logic;
+
+        -- pll dynamic reconfiguration port address bus
+        i_pll_daddr : in std_logic_vector(6 downto 0);
+        -- pll dynamic reconfiguration port enable signal
+        i_pll_den   : in std_logic;
+        -- pll dynamic reconfiguration port write enable signal
+        i_pll_dwe   : in std_logic;
+        -- pll dynamic reconfiguration port write data bus
+        i_pll_di    : in std_logic_vector(15 downto 0);
+        -- pll dynamic reconfiguration port data ready signal
+        o_pll_drdy  : out std_logic;
+        -- pll dynamic reconfiguration port read data bus
+        o_pll_do    : out std_logic_vector(15 downto 0);
+        -- pll lock indicator
+        o_pll_locked : out std_logic
     );
 end entity TrngTestbed;
 
 architecture rtl of TrngTestbed is
 begin
-
-    -- By default, only the MCX entropy source is supported. Other entropy sources
-    -- require different clock, which means support for either several clocks, 
-    -- a single dynamic clock, or other solution needs to be implemented.
-    -- Is there any major issue with outputting a dynamic clock? Essentially muxing between the implemented clocks
-    -- based on i_rng_addr, thereby allowing the clock to be used for downstream logic? 
-    -- Its possible with bufgctrls according to 
-    -- https://docs.amd.com/r/2023.1-English/ug949-vivado-design-methodology/Clock-Multiplexing
-    -- but is it recommended?
 
     eTrngs : entity ostrngs.TrngGenerator
     generic map (
@@ -63,7 +72,18 @@ begin
         i_rng_addr  => i_rng_addr,
         o_rng_clk   => o_rng_clk,
         o_rng_data  => o_rng_data,
-        o_rng_valid => o_rng_valid
+        o_rng_valid => o_rng_valid,
+
+        i_pll_daddr  => i_pll_daddr,
+        i_pll_den    => i_pll_den,
+        i_pll_dwe    => i_pll_dwe,
+        i_pll_di     => i_pll_di,
+        o_pll_drdy   => o_pll_drdy,
+        o_pll_do     => o_pll_do,
+        o_pll_locked => o_pll_locked
     );
     
 end architecture rtl;
+
+-----------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------

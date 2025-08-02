@@ -6,7 +6,8 @@ random bit generators and their integration with an entropy source, SP 800-90B p
 and validation of entropy sources. 
 
 Central to the recommendation set forth by NIST SP 800-90B is the measurement of entropy; specifically the publication
-focuses on min-entropy. 
+focuses on min-entropy, and then the determination of the entropy source's ability to generate independent and 
+identically distributed entropy samples. 
 
 Furthermore, the publication sets out a block diagram model of an expected design of an entropy source, which includes
 the following components:
@@ -35,8 +36,6 @@ the inclusion of a conditioning component, but essentially require the collectio
 The third requirement specifies that for the restart tests, 1000 consecutive samples must be collected, 1000 times. 
 This allows for testing for undesired correlation between ideally unique rows and columns.
 
-% Note: revisit independent and identically distributed (IID) vs non-IID, not sure I understand this right this second.
-% Does IID essentially mean independent and uniformly distributed?
 The specification further breaks down the validation testing into the \textit{independent and identically distributed} 
 (IID) path and the non-IID path. For an entropy source to be independent and identically distributed, the symbols it
 generates need to be distributed according to a uniform distribution, that is, no symbol can be more commonly occurring
@@ -84,17 +83,34 @@ types of validation tests will give overconfident estimates of min-entropy.
 The min-entropy estimators provided are listed as follows:
 
 \begin{enumerate}
-    \item Most Common Value Estimate
-    \item Collision Estimate (binary inputs only)
-    \item Markov Estimate (binary inputs only)
-    \item Compression Estimate (binary inputs only)
-    \item \textit{t}-Tuple Estimate
-    \item Longest Repeated Substring (LRS) Estimate
-    \item Multi Most Common in Window Prediction Estimate
-    \item Lag Prediction Estimate
-    \item MultiMMC Prediction Estimate
-    \item LZ78Y Prediction Estimate
+    \item \textbf{Most Common Value Estimate}
+    \item \textbf{Collision Estimate (binary inputs only)}
+    \item \textbf{Markov Estimate (binary inputs only)}
+    \item \textbf{Compression Estimate (binary inputs only)}
+    \item \textbf{\textit{t}-Tuple Estimate}
+    \item \textbf{Longest Repeated Substring (LRS) Estimate}
+    \item \textbf{Multi Most Common in Window (MultiMCW) Prediction Estimate}
+    \item \textbf{Lag Prediction Estimate}
+    \item \textbf{Multiple Markov Model with Counting (MultiMMC) Prediction Estimate}
+    \item \textbf{LZ78Y Prediction Estimate}
 \end{enumerate}
+
+Each test is implemented with a specific scenario in mind. For IID entropy sources, the Most Common Value estimate 
+is sufficient; however, for non-IID entropy sources, it gives an overestimate of min-entropy, and as such the 
+remaining nine tests are required to determine the minimum estimate. The lowest min-entropy estimate is determined
+as the min-entropy for the entropy source, as a guarantee that the entropy source has at maximum this entropy and 
+no greater.
+
+Certain min-entropy estimators are designated as for binary inputs only, i.e., that the entropy source only generates
+two symbols (typically termed '1' and '0') rather than a larger set of symbols. Binary inputs have the smallest legal
+symbol set, as a symbol set of size 1 is inherently deterministic and thus fails as an entropy source, but the 
+Collision Estimate, Markov Estimate, and Compression Estimate make use of binary properties and probabilities (e.g., 
+$P_{0\rightarrow0}$, $P_{0\rightarrow1}$, and vice versa) to identify biases in the entropy samples.
+
+The remaining six tests also work to identify biases but in the form of sequences (namely the \textit{t}-Tuple
+Estimate, LRS Estimate, MultiMCW Prediction Estimate), in the form of repetition after a certain lag time (the aptly-
+named Lag Prediction Estimate), or in the form of predicting transitions or of sequences (the LZ78Y Prediction
+Estimate). 
 
 \subsubsection{Health Tests}
 
