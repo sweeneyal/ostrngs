@@ -8,7 +8,8 @@ t      = np.arange(start=0.0, stop=tmax, step=dt)
 
 ic = np.zeros(shape=(45));
 for i in range(45):
-    ic[i] = i % 2
+    if i % 4 >= 2:
+        ic[i] = 1
 
 tau = np.int64(np.ceil(np.random.normal(1e-9, 1e-10, (45))/dt))
 

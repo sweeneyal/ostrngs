@@ -20,13 +20,9 @@ architecture rtl of tb_StrTrng is
 begin
 
     eDut : entity ostrngs.StrTrng
-    generic map (
-        cNumStages => 45
-    ) port map (
+    port map (
         i_clk    => clk,
         i_resetn => resetn,
-        i_mode   => mode,
-        i_set    => set,
         o_rng    => rng
     );
     

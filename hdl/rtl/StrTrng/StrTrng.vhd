@@ -5,19 +5,16 @@ library ieee;
 library ostrngs;
 
 entity StrTrng is
-    generic (
-        cNumStages : natural := 45
-    );
     port (
         i_clk    : in std_logic;
         i_resetn : in std_logic;
-        i_mode   : in std_logic;
-        i_set    : in std_logic_vector(cNumStages - 1 downto 0);
         o_rng    : out std_logic_vector(0 downto 0)
     );
 end entity StrTrng;
 
 architecture rtl of StrTrng is
+    constant cNumStages : natural := 45;
+
     signal mode    : std_logic := '0';
     signal set     : std_logic_vector(cNumStages - 1 downto 0) := (others => '0');
     signal c       : std_logic_vector(cNumStages - 1 downto 0) := (others => '0');
@@ -25,14 +22,19 @@ architecture rtl of StrTrng is
     signal merge_c : std_logic := '0';
 begin
     
-    ModeAndSetCtrl: process(i_resetn, i_mode, i_set)
+    ModeAndSetCtrl: process(i_resetn)
     begin
         if (i_resetn = '0') then
             mode <= '1';
             set  <= (others => '0');
+            for ii in 0 to cNumStages - 1 loop
+                if ii mod 4 >= 2 then
+                    set(ii) <= '1';
+                end if;
+            end loop;
         else
-            mode <= i_mode;
-            set  <= i_set; 
+            mode <= '0';
+            set  <= (others => '0'); 
         end if;
     end process ModeAndSetCtrl;
 
@@ -40,8 +42,8 @@ begin
     generic map (
         cNumStages => cNumStages
     ) port map (
-        i_mode => i_mode,
-        i_set => i_set,
+        i_mode => mode,
+        i_set => set,
         o_c   => c
     );
 

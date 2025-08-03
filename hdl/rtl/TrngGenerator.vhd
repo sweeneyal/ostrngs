@@ -1,4 +1,9 @@
 -----------------------------------------------------------------------------------------------------------------------
+-- entity: TrngGenerator
+-- description: Core generative file that instantiates all supported types of entropy sources. Uses VHDL-2008 
+--              techniques, and as such often requires a wrapper file for instantiation in Vivado block diagrams.
+--              Provides an address interface to select which entropy source is being output on the o_rng_* busses,
+--              and provides DRP access to the sampling clock PLL.
 -----------------------------------------------------------------------------------------------------------------------
 
 library ieee;
@@ -9,7 +14,9 @@ library ostrngs;
 
 entity TrngGenerator is
     generic (
-        cNumEntropySources : positive range 1 to 255 := 8;
+        -- Sets the total number of entropy sources to instantiate
+        cNumEntropySources : positive range 1 to 8 := 8;
+        -- Provides a mechanism to instantiate various unique entropy sources
         cEntropySource00   : string := "MeshCoupledXor";
         cEntropySource01   : string := "MeshCoupledXor";
         cEntropySource02   : string := "MeshCoupledXor";
@@ -35,17 +42,17 @@ entity TrngGenerator is
         o_rng_valid : out std_logic;
 
         -- pll dynamic reconfiguration port address bus
-        i_pll_daddr : in std_logic_vector(6 downto 0);
+        i_pll_daddr  : in std_logic_vector(6 downto 0);
         -- pll dynamic reconfiguration port enable signal
-        i_pll_den   : in std_logic;
+        i_pll_den    : in std_logic;
         -- pll dynamic reconfiguration port write enable signal
-        i_pll_dwe   : in std_logic;
+        i_pll_dwe    : in std_logic;
         -- pll dynamic reconfiguration port write data bus
-        i_pll_di    : in std_logic_vector(15 downto 0);
+        i_pll_di     : in std_logic_vector(15 downto 0);
         -- pll dynamic reconfiguration port data ready signal
-        o_pll_drdy  : out std_logic;
+        o_pll_drdy   : out std_logic;
         -- pll dynamic reconfiguration port read data bus
-        o_pll_do    : out std_logic_vector(15 downto 0);
+        o_pll_do     : out std_logic_vector(15 downto 0);
         -- pll lock indicator
         o_pll_locked : out std_logic
     );
@@ -90,6 +97,9 @@ architecture rtl of TrngGenerator is
     signal rng_resetn : std_logic := '0';
 begin
 
+    -- Each clock (there being 6 clocks) is dedicated to a type of entropy source. The multiplexor allows for
+    -- different clocks to be changed individually without changing the active clock being used for 
+    -- the currently selected entropy source.
     eClockManager : entity ostrngs.ClockManager
     port map (
         i_clk    => i_clk,
@@ -164,9 +174,26 @@ begin
             rng_valid(g_ii) <= rng_resetn;
         end generate gOpenLoopMetaTrng;
 
-        -- gStrTrng: if (str_eq(cEntropySources(g_ii), "StrTrng")) generate
-            
-        -- end generate gStrTrng;
+        gStrTrng: if (cEntropySources(g_ii) = padded("StrTrng", 256)) generate
+            signal local_rng : std_logic_vector(0 downto 0) := "0";
+        begin
+        
+            eStrTrng : entity ostrngs.StrTrng
+            port map (
+                i_clk    => rng_clk,
+                i_resetn => rng_resetn,
+                o_rng    => local_rng
+            );
+
+            -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
+            sel(g_ii) <= std_logic_vector(to_unsigned(1, cNumClocks - 1));
+
+            -- Resize the random sample to fit a 32 bit word
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 32));
+
+            -- This entropy source generates a new random sample every clock cycle it is active.
+            rng_valid(g_ii) <= rng_resetn;
+        end generate gStrTrng;
     end generate gEntropySourceInstantiation;
     
 end architecture rtl;

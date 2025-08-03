@@ -6,9 +6,7 @@ library ostrngs;
 
 entity OpenLoopMetaTrng is
     generic (
-        cNumFineStages : natural := 64;
-        cNumCoarseStages : natural := 64;
-        cSimFineDelay_ps : natural := 50;
+        cSimFineDelay_ps   : natural := 50;
         cSimCoarseDelay_ps : natural := 100
     );
     port (
@@ -19,6 +17,9 @@ entity OpenLoopMetaTrng is
 end entity OpenLoopMetaTrng;
 
 architecture rtl of OpenLoopMetaTrng is
+    constant cNumFineStages   : natural := 64;
+    constant cNumCoarseStages : natural := 64;
+
     signal c       : std_logic_vector(cNumFineStages downto 0) := (others => '0');
     signal d       : std_logic_vector(cNumFineStages downto 0) := (others => '0');
     signal d_reg   : std_logic_vector(cNumFineStages - 1 downto 0) := (others => '0');

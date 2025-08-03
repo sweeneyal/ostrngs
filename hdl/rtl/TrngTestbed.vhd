@@ -9,7 +9,9 @@ library ostrngs;
 
 entity TrngTestbed is
     generic (
+        -- Sets the total number of entropy sources to instantiate
         cNumEntropySources : positive range 1 to 8 := 8;
+        -- Provides a mechanism to instantiate various unique entropy sources
         cEntropySource00   : string := "MeshCoupledXor";
         cEntropySource01   : string := "MeshCoupledXor";
         cEntropySource02   : string := "MeshCoupledXor";
@@ -35,17 +37,17 @@ entity TrngTestbed is
         o_rng_valid : out std_logic;
 
         -- pll dynamic reconfiguration port address bus
-        i_pll_daddr : in std_logic_vector(6 downto 0);
+        i_pll_daddr  : in std_logic_vector(6 downto 0);
         -- pll dynamic reconfiguration port enable signal
-        i_pll_den   : in std_logic;
+        i_pll_den    : in std_logic;
         -- pll dynamic reconfiguration port write enable signal
-        i_pll_dwe   : in std_logic;
+        i_pll_dwe    : in std_logic;
         -- pll dynamic reconfiguration port write data bus
-        i_pll_di    : in std_logic_vector(15 downto 0);
+        i_pll_di     : in std_logic_vector(15 downto 0);
         -- pll dynamic reconfiguration port data ready signal
-        o_pll_drdy  : out std_logic;
+        o_pll_drdy   : out std_logic;
         -- pll dynamic reconfiguration port read data bus
-        o_pll_do    : out std_logic_vector(15 downto 0);
+        o_pll_do     : out std_logic_vector(15 downto 0);
         -- pll lock indicator
         o_pll_locked : out std_logic
     );
