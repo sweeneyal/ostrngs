@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 dt     = 50e-12
 tau_LP = 0.8e-9
-tmax   = 1200.0e-9
+tmax   = 200.0e-9
 t      = np.arange(start=0.0, stop=tmax, step=dt)
 
 ic = np.zeros(shape=(45));
