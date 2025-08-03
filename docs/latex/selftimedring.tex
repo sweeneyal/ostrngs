@@ -16,8 +16,8 @@ to propagate through the chain of Muller C elements. It is worth noting that the
 implementation described in Park et. al. [cite] is designed as implemented in an ASIC. 
 
 We reimplemented the work described in Park et. al. targeting an FPGA by implementing
-the Muller C element as an inferred latch. As the truth table in figure 
-\ref{fig:mullerc_truth_table} shows, the Muller C element has state memory, as well as signals
+the Muller-C element as an inferred latch. As the truth table in figure 
+\ref{fig:mullerc_truth_table} shows, the Muller-C element has state memory, as well as signals
 that cause it to change to different states. Therefore, the truth table can be implemented 
 with a latch and basic logic elements.
 
@@ -26,4 +26,15 @@ oscillator at the rising and falling edges. This jitter comes from thermal noise
 follows a Gaussian distribution. Since every Muller C element's output is sampled and then
 summed together to produce a single bit, the expectation is that several of these samples
 will measure the oscillator's signal close enough to a transition point, where the jitter
-will then ensure some randomness in these samples.
+will then ensure some randomness in these samples. This is an intential abuse of setup and 
+hold timing constraints, instead fostering the often-undesirable non-determinism that timing
+analysis seeks to avoid.
+
+The implementation produced by the authors allows also an additional knob for configuring the
+initial transient behavior of the ring; the Muller-C element has a precharge component, in this
+implementation simply charging or discharging the inferred latch. The charge stored within the
+Muller-C element changes the dynamics slightly, though eventually the self-timed oscillator is 
+expected to approach its intrinsic waveform. 
+
+Despite the entropy source being self-timed and thus autonomous, the boolean behavior is nonchaotic
+and acts as a jittery oscillator rather than a high dimensional chaotic system.

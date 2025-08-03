@@ -35,6 +35,10 @@ architecture rtl of OpenLoopMetaTrng is
 
     constant cUpperBound : natural := 128 + 50;
     constant cLowerBound : natural := 128 - 50;
+
+    attribute DONT_TOUCH : string;
+    attribute DONT_TOUCH of c : signal is "true";
+    attribute DONT_TOUCH of d : signal is "true";
 begin
     
     eCascade : entity ostrngs.CoarseCascade
