@@ -14,7 +14,7 @@ entity OpenLoopMetaTrng is
     port (
         i_clk    : in std_logic;
         i_resetn : in std_logic;
-        o_rbit   : out std_logic
+        o_rng    : out std_logic_vector(0 downto 0)
     );
 end entity OpenLoopMetaTrng;
 
@@ -181,9 +181,9 @@ begin
     begin
         if rising_edge(i_clk) then
             if (i_resetn = '0') then
-                o_rbit <= '0';
+                o_rng(0) <= '0';
             else
-                o_rbit <= merge_d;
+                o_rng(0) <= merge_d;
             end if;
         end if;
     end process FinalSampler;

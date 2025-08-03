@@ -125,8 +125,6 @@ begin
         gMeshCoupledXor: if (cEntropySources(g_ii) = padded("MeshCoupledXor", 256)) generate
             signal local_rng : std_logic_vector(5 downto 0) := (others => '0');
         begin
-            
-            -- Convert reset to domain of entropy source
 
             eMeshCoupledXor : entity ostrngs.MeshCoupledXor
             port map (
@@ -142,12 +140,29 @@ begin
             rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 32));
 
             -- This entropy source generates a new random sample every clock cycle it is active.
-            rng_valid(g_ii) <= i_resetn;
+            rng_valid(g_ii) <= rng_resetn;
         end generate gMeshCoupledXor;
 
-        -- gOpenLoopMetaTrng: if (str_eq(cEntropySources(g_ii), "OpenLoopMetaTrng")) generate
-            
-        -- end generate gOpenLoopMetaTrng;
+        gOpenLoopMetaTrng: if (cEntropySources(g_ii) = padded("OpenLoopMetaTrng", 256)) generate
+            signal local_rng : std_logic_vector(0 downto 0) := "0";
+        begin
+
+            eOpenLoopMeta : entity ostrngs.OpenLoopMetaTrng
+            port map (
+                i_clk    => rng_clk,
+                i_resetn => rng_resetn,
+                o_rng    => local_rng
+            );
+
+            -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
+            sel(g_ii) <= std_logic_vector(to_unsigned(1, cNumClocks - 1));
+
+            -- Resize the random sample to fit a 32 bit word
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 32));
+
+            -- This entropy source generates a new random sample every clock cycle it is active.
+            rng_valid(g_ii) <= rng_resetn;
+        end generate gOpenLoopMetaTrng;
 
         -- gStrTrng: if (str_eq(cEntropySources(g_ii), "StrTrng")) generate
             
