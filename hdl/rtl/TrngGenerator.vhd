@@ -24,7 +24,9 @@ entity TrngGenerator is
         cEntropySource04   : string := "MeshCoupledXor";
         cEntropySource05   : string := "MeshCoupledXor";
         cEntropySource06   : string := "MeshCoupledXor";
-        cEntropySource07   : string := "MeshCoupledXor"
+        cEntropySource07   : string := "MeshCoupledXor";
+        -- Sets the standard data width in bytes for the entropy source output
+        cDataWidth_B       : positive := 1
     );
     port (
         -- system clock
@@ -37,7 +39,7 @@ entity TrngGenerator is
         -- entropy source sample clock
         o_rng_clk   : out std_logic;
         -- entropy sample output 
-        o_rng_data  : out std_logic_vector(31 downto 0);
+        o_rng_data  : out std_logic_vector(8 * cDataWidth_B - 1 downto 0);
         -- indicator that entropy sample is valid
         o_rng_valid : out std_logic;
 
@@ -83,7 +85,7 @@ architecture rtl of TrngGenerator is
         padded(cEntropySource07, 256)
     );
 
-    type rng_matrix_t is array (0 to cNumEntropySources - 1) of std_logic_vector(31 downto 0);
+    type rng_matrix_t is array (0 to cNumEntropySources - 1) of std_logic_vector(8 * cDataWidth_B - 1 downto 0);
     
     signal rng       : rng_matrix_t := (others => (others => '0'));
     signal rng_valid : std_logic_vector(cNumEntropySources - 1 downto 0) := (others => '0');
@@ -146,8 +148,8 @@ begin
             -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
             sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
 
-            -- Resize the random sample to fit a 32 bit word
-            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 32));
+            -- Resize the random sample to fit into the o_rng_data bus.
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
 
             -- This entropy source generates a new random sample every clock cycle it is active.
             rng_valid(g_ii) <= rng_resetn;
@@ -167,8 +169,8 @@ begin
             -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
             sel(g_ii) <= std_logic_vector(to_unsigned(1, cNumClocks - 1));
 
-            -- Resize the random sample to fit a 32 bit word
-            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 32));
+            -- Resize the random sample to fit into the o_rng_data bus.
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
 
             -- This entropy source generates a new random sample every clock cycle it is active.
             rng_valid(g_ii) <= rng_resetn;
@@ -188,8 +190,8 @@ begin
             -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
             sel(g_ii) <= std_logic_vector(to_unsigned(1, cNumClocks - 1));
 
-            -- Resize the random sample to fit a 32 bit word
-            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 32));
+            -- Resize the random sample to fit into the o_rng_data bus.
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
 
             -- This entropy source generates a new random sample every clock cycle it is active.
             rng_valid(g_ii) <= rng_resetn;
