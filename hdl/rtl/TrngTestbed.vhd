@@ -19,7 +19,9 @@ entity TrngTestbed is
         cEntropySource04   : string := "MeshCoupledXor";
         cEntropySource05   : string := "MeshCoupledXor";
         cEntropySource06   : string := "MeshCoupledXor";
-        cEntropySource07   : string := "MeshCoupledXor"
+        cEntropySource07   : string := "MeshCoupledXor";
+        -- Sets the standard data width in bytes for the entropy source output
+        cDataWidth_B       : positive := 1
     );
     port (
         -- system clock
@@ -32,7 +34,7 @@ entity TrngTestbed is
         -- entropy sample clock
         o_rng_clk   : out std_logic;
         -- entropy sample output synchronous to o_rng_clk
-        o_rng_data  : out std_logic_vector(31 downto 0);
+        o_rng_data  : out std_logic_vector(8 * cDataWidth_B - 1 downto 0);
         -- indicator that entropy sample on rng_data is valid
         o_rng_valid : out std_logic;
 
@@ -66,7 +68,8 @@ begin
         cEntropySource04   => cEntropySource04,
         cEntropySource05   => cEntropySource05,
         cEntropySource06   => cEntropySource06,
-        cEntropySource07   => cEntropySource07
+        cEntropySource07   => cEntropySource07,
+        cDataWidth_B       => cDataWidth_B
     ) port map (
         i_clk    => i_clk,
         i_resetn => i_resetn,
