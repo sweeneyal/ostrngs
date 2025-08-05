@@ -4,8 +4,6 @@ docs/latex/*
 **__pycache__**
 *.venv
 
-data
-
 scratch
 
 *.so
