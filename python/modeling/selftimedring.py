@@ -13,10 +13,6 @@ for i in range(45):
 
 tau = np.int64(np.ceil(np.random.normal(1e-9, 1e-10, (45))/dt))
 
-state  = np.zeros(shape=(45, len(t)))
-driver = np.zeros(shape=(45, len(t)))
-x_dot  = np.zeros(shape=(45, len(t)))
-
 def Xth(x):
     if x > 0.5:
         return 1
@@ -55,6 +51,10 @@ def bound(x):
 
 c = 1/tau_LP
 
+state  = np.zeros(shape=(45, len(t)))
+driver = np.zeros(shape=(45, len(t)))
+x_dot  = np.zeros(shape=(45, len(t)))
+
 for i in range(len(t) - 1):
     for j in range(45):
         driver[j, i]  = mullerc_latch(state, i, tau, j)
@@ -68,6 +68,31 @@ plt.plot(t * 1e9, state[0, :], color="b")
 plt.xlabel('Time [ns]')
 plt.ylabel('Voltage [V]')
 plt.xlim((0, tmax * 1e9))
-plt.title('Slew-Rate-Based Model of Self-Timed Ring Entropy Source')
-plt.savefig('data/figures/selftimedring.png')
+plt.title('Slew-Rate-Based Model of Self-Timed Ring Entropy Source with Seed 0011')
+plt.savefig('data/figures/selftimedring_0011.png')
+plt.show()
+
+ic = np.zeros(shape=(45));
+for i in range(45):
+    ic[i] = i % 2
+
+tmax   = 800.0e-9
+t      = np.arange(start=0.0, stop=tmax, step=dt)
+
+state  = np.zeros(shape=(45, len(t)))
+driver = np.zeros(shape=(45, len(t)))
+x_dot  = np.zeros(shape=(45, len(t)))
+
+for i in range(len(t) - 1):
+    for j in range(45):
+        driver[j, i]  = mullerc_latch(state, i, tau, j)
+        x_dot[j, i]   = -c * ((-1) ** driver[j, i])
+        state[j, i+1] = bound(x_dot[j, i] * dt + state[j, i])
+
+plt.plot(t * 1e9, state[0, :], color="b")
+plt.xlabel('Time [ns]')
+plt.ylabel('Voltage [V]')
+plt.xlim((0, tmax * 1e9))
+plt.title('Slew-Rate-Based Model of Self-Timed Ring Entropy Source with Seed 0101')
+plt.savefig('data/figures/selftimedring_0101.png')
 plt.show()
