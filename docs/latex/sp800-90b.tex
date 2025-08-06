@@ -112,6 +112,13 @@ Estimate, LRS Estimate, MultiMCW Prediction Estimate), in the form of repetition
 named Lag Prediction Estimate), or in the form of predicting transitions or of sequences (the LZ78Y Prediction
 Estimate). 
 
+The ten-test NIST SP 800-90B battery was then implemented from the algorithms provided by the same document in Python 
+and C++; we did some follow-on work reimplementing the tests as C++ functions integrated with pybind11 using portions 
+of the existing C++ NIST implementation to inform other optimization. The tool pybind11 is a popular library in Python
+that allows easy integration of C++ code into Python, allowing the speedier low-level implementation control C++ 
+provides in a high-level language like Python, required as the Python-only implementations often incurred a significant
+speed penalty for realistically sized datasets. 
+
 \subsubsection{Health Tests}
 
 % Note: revisit health tests here

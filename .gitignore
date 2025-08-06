@@ -1,8 +1,11 @@
 docs/latex/*
 !docs/latex/*.tex
+!docs/latex/figures
 
 **__pycache__**
 *.venv
+
+data
 
 scratch
 

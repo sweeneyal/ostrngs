@@ -37,4 +37,26 @@ Muller-C element changes the dynamics slightly, though eventually the self-timed
 expected to approach its intrinsic waveform. 
 
 Despite the entropy source being self-timed and thus autonomous, the boolean behavior is nonchaotic
-and acts as a jittery oscillator rather than a high dimensional chaotic system.
+and acts as a jittery oscillator rather than a high dimensional chaotic system. Using a novel 
+slew rate based modeling technique for boolean networks, we modeled the self-timed ring oscillator 
+in two ways to identify the ideal behavior at a given measurement point for two different seeds, 
+one with a repeating pattern of "0011" in figure \ref{fig:selftimedring_0011} and the other with 
+a repeating pattern of "0101" in figure \ref{fig:selftimedring_0101}. The purpose of these 
+seeds was to demonstrate sensitivity to the seed value when configuring the oscillator, as well 
+as show the regularity in oscillator behavior in an idealized simulation, further showing the 
+entropy source is derived from jitter rather than a chaotic behavior.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/selftimedring_0011.png} % Adjust width as needed
+\caption{Piecewise linear slew rate model of one measurement point within a self-timed ring seeded with a seed of repeating "0011".}
+\label{fig:selftimedring_0011}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/selftimedring_0101.png} % Adjust width as needed
+\caption{Piecewise linear slew rate model of one measurement point within a self-timed ring seeded with a seed of repeating "0101" 
+    allowed to run for an extended simulation period.}
+\label{fig:selftimedring_0101}
+\end{figure}

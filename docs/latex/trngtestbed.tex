@@ -23,6 +23,13 @@ from the selected entropy source to whatever downstream logic is added by the us
 selectable entropy sources for the same application, such as backups if the health of an entropy source becomes 
 degraded.
 
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/drawio/trngtestbed_toplevel.png} % Adjust width as needed
+\caption{Architecture diagram of integrated health sensor for open-loop metastable entropy source.}
+\label{fig:trngtestbed_toplevel}
+\end{figure}
+
 In addition, the TRNG Testbed IP core allows selection of desired clock frequency. Several TRNGs have a range of clocks
 the source authors have identified as optimal, but the dynamic selection of clock frequency has the added benefit of
 providing local, per-entropy-source optimization. 

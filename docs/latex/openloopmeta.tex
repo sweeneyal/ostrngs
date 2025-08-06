@@ -21,8 +21,24 @@ tests, failing the entropy estimation test.
 For the implementation given here, some liberties were taken in the implementation; 
 namely, the control of the coarse chains was automated by an internal set of counters
 that identified and scored the most metastable combination of the coarse chains, thereby
-identifying the most number of unstable flops. Having several metastable flops incorporated
-into the final XOR summation theoretically allows for better min-entropy. Additionally, the
-MUX21 stages implemented in the ASIC are in this case retargeted to AMD-Xilinx LUTs, and the
-buffer elements between the measuring flops in the fine measurment chain are similarly 
-retargeted to LUTs.
+identifying the most number of unstable flops. Each flop in the fine stage is provided an 8-bit 
+counter that increments whenever the flop measures a '1', over 255 consecutive samples. When 
+255 consecutive samples have been collected, the counters are then evaluated such that if the 
+attached flop counter measures close to 127 (because $127/255\approx0.5$) the flop is evenly 
+metastable. If the flop measures too high or too low, the flop is unevenly metastable, or possibly
+even stable if the count measures 0 or 255 exactly. The architecture diagram is provided in 
+figure \ref{fig:openloopmeta_health}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/drawio/openloopmeta_health.png} % Adjust width as needed
+\caption{Architecture diagram of integrated health sensor for open-loop metastable entropy source.}
+\label{fig:openloopmeta_health}
+\end{figure}
+
+By the end of an initial measurement period, the best occurring configuration is accepted and used for
+the entropy source. Ideally, the configuration with the most metastable flops used in the final 
+XOR summation at the entropy source's output theoretically allows for better min-entropy. 
+Additionally, the MUX21 stages implemented in the ASIC are in this case retargeted to 
+AMD-Xilinx LUTs, and the buffer elements between the measuring flops in the fine measurment 
+chain are similarly retargeted to LUTs.

@@ -1,4 +1,4 @@
-\subsection{Mesh-Coupled Xor TRNG}
+\subsection{Mesh-Coupled XOR Autonomous Boolean Network TRNG}
 
 The Mesh-Coupled XOR TRNG proposed by Lu et. al. is an autonomous boolean network designed 
 based on first principles established by Gong et. al. that fundamentally uses several ring oscillators,
@@ -16,3 +16,29 @@ present, though it is assumed due to its similarity to work by Rosin and Zhang.
 The entropy source samples from several points within the boolean network, specifically at the left- and
 right-hand sides of the coupled XOR units. Six sets of four measurement points are then defined, and each
 of the four measurement points are XORed together to generate six bits of randomness.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/drawio/meshcoupledxor_toplevel.png} % Adjust width as needed
+\caption{Diagram of the Mesh Coupled XOR Boolean Network with the Coupled XOR (CX) Unit magnified.}
+\label{fig:mesh_coupled_xor_diagram}
+\end{figure}
+
+As part of fully evaluating the entropy source, the model of the autonomous boolean network was recreated
+both using the same modeling technique as Rosin et. al. and Gong et. al., and then with a new technique
+that used slew rates as opposed to first order low-pass filtering. The recreation with the former technique
+is provided in figure \ref{fig:mesh_coupled_xor_plde} and the latter technique in \ref{fig:mesh_coupled_xor_plsr}.
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/meshcoupledxor_plde.png} % Adjust width as needed
+\caption{Recreated piecewise linear differential equation model of one node of Mesh Coupled XOR model.}
+\label{fig:mesh_coupled_xor_plde}
+\end{figure}
+
+\begin{figure}
+\centering
+\includegraphics[width=0.45\textwidth]{figures/meshcoupledxor_slewrate.png} % Adjust width as needed
+\caption{Piecewise linear slew rate model of one node of Mesh Coupled XOR model.}
+\label{fig:mesh_coupled_xor_plsr}
+\end{figure}
