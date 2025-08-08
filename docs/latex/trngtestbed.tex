@@ -8,7 +8,7 @@ integrable into a given platform. What the TRNG Testbed IP seeks to do is:
     \item Extend the interfaces to allow an instantiation of several entropy sources of various types
         for evaluation of several implementations, either of like entropy sources or of different entropy sources
         on the same platform.
-\end{enumerate}
+\end{enumerate} 
 
 Two implementations are provided with the open-source catalog; the TRNG Testbed as a platform, and as an IP core. The 
 platform variant targeting the Digilent Genesys 2 is designed to provide 8 different instantiations of entropy sources
@@ -18,18 +18,35 @@ startup test. The platform then takes the generated entropy samples and pipes th
 onboard DDR3 RAM. The NIST SP 800-90B minimum required number of consecutive samples is collected, and then streamed 
 back to the host computer to be analyzed.
 
-The IP core implementation is provided as the raw RTL files. The interface to the core is simple, and streams samples 
-from the selected entropy source to whatever downstream logic is added by the user. This allows the user to have 
-selectable entropy sources for the same application, such as backups if the health of an entropy source becomes 
-degraded.
+The IP core variant is designed for integration into a processor-based system on FPGA. The vast majority of TRNG 
+applications are within processor-based designs, usually as a part of an algorithm such as key generation within 
+cryptography like ML-KEM, simulations of complex and random natural phenomena, and more. As a result, the IP core 
+variant of the TRNG Testbed is designed with an AXI4 Lite interface, maintaining compatibility with AMD Vivado block
+design workflow. Additionally, because the TRNG Testbed is designed for entropy source instrumentation, an additional 
+AXI interface will be implemented into the final, eventual implementation in order to provide a direct memory access
+(DMA) feature, allowing the NIST SP 800-90B minimum required number of samples to be stored and read out by the 
+processor from a designated memory region.
+
+The TRNG Testbed IP core provides several configuration options at synthesis-time and at run-time. Firstly, a 
+configurable number of different types of supported entropy sources can be instantiated through the top level generics.
+By making the entropy source lineup configurable, users can instantiate several different types of entropy sources,
+or several copies of the same entropy source, which allows for side-by-side comparison between two different entropy 
+sources, or identifying the upper and lower bound of performance for the same entropy source. In addition, the IP core
+allows selection of desired clock frequency. Several TRNGs have a range of clock frequencies the source authors have 
+identified as optimal, thus the dynamic selection of clock frequency has the added benefit of providing local, per-
+entropy-source optimization, as well as the ability to characterize min-entropy over a range of frequencies.
 
 \begin{figure}
 \centering
 \includegraphics[width=0.45\textwidth]{figures/drawio/trngtestbed_toplevel.png} % Adjust width as needed
-\caption{Architecture diagram of integrated health sensor for open-loop metastable entropy source.}
+\caption{Architecture diagram of TRNG Testbed IP Core.}
 \label{fig:trngtestbed_toplevel}
 \end{figure}
 
-In addition, the TRNG Testbed IP core allows selection of desired clock frequency. Several TRNGs have a range of clocks
-the source authors have identified as optimal, but the dynamic selection of clock frequency has the added benefit of
-providing local, per-entropy-source optimization. 
+The wide range of features provided by the TRNG Testbed are intended to support investigation, instrumentation,
+and demonstration of a wide variety of entropy sources in a relevant application space. By standardizing the interfaces,
+entropy sources become essentially plug-and-play within the TRNG Testbed or in other applications with a matching
+interface. NIST SP 800-90B defines a set of standard entropy evaluation mechanisms, so in order to support min-entropy
+estimation of a demonstration system, the TRNG Testbed provides the instrumentation necessary to perform this evaluation.
+Finally, integration with a processor as a standard peripheral IP core defines a realistic and relevant demonstration
+platform that will aid in furthering research and development of these entropy sources.

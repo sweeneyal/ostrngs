@@ -10,6 +10,7 @@ namespace py = pybind11;
 
 #include <iostream>
 
+// Source: https://github.com/usnistgov/SP800-90B_EntropyAssessment/blob/master/cpp/non_iid/compression_test.h
 inline void kahan_add(double &sum, double &comp, double in){
 	double y, t; 
 
@@ -19,6 +20,9 @@ inline void kahan_add(double &sum, double &comp, double in){
 	sum = t;
 }
 
+// Source: https://github.com/usnistgov/SP800-90B_EntropyAssessment/blob/master/cpp/non_iid/compression_test.h
+// The NIST implementation shown has several fancy optimizations that allow for significantly improved performance
+// relative to the Python code in estimators.py
 double G(double z, int d, long num_blocks){
 	double Ai=0.0, Ai_comp=0.0;
 	double firstSum=0.0, firstSum_comp=0.0;

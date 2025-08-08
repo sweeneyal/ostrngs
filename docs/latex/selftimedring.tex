@@ -1,6 +1,6 @@
 \subsection{Self-Timed Ring TRNG}
 
-The self-timed ring (STR) TRNG proposed by Park et. al. is designed from the use of 
+The self-timed ring (STR) TRNG proposed by Park et. al. \cite{park_pvt-tolerant_2024} is designed from the use of 
 an oscillator that allows for simultaneous pulse propagation without encountering
 collisions between pulses. The fundamental component at the heart of this TRNG is
 the Muller C element [cite], designed such that it has the truth table listed 
@@ -13,7 +13,7 @@ in figure \ref{fig:mullerc_truth_table}.
 In comparison with the inverter ring oscillator-based TRNG, which has one "token"
 that propagates through the entire inverter chain, the STR-TRNG allows several "tokens"
 to propagate through the chain of Muller C elements. It is worth noting that the
-implementation described in Park et. al. [cite] is designed as implemented in an ASIC. 
+implementation described in Park et. al. \cite{park_pvt-tolerant_2024} is designed as implemented in an ASIC. 
 
 We reimplemented the work described in Park et. al. targeting an FPGA by implementing
 the Muller-C element as an inferred latch. As the truth table in figure 
@@ -22,7 +22,7 @@ that cause it to change to different states. Therefore, the truth table can be i
 with a latch and basic logic elements.
 
 This TRNG is designed such that the primary source of entropy is accumulated jitter of the
-oscillator at the rising and falling edges. This jitter comes from thermal noise and thus 
+oscillator at the rising and falling edges \cite{park_pvt-tolerant_2024}. This jitter comes from thermal noise and thus 
 follows a Gaussian distribution. Since every Muller C element's output is sampled and then
 summed together to produce a single bit, the expectation is that several of these samples
 will measure the oscillator's signal close enough to a transition point, where the jitter

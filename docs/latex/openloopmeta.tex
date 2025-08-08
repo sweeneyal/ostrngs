@@ -2,21 +2,20 @@
 
 The open-loop metastable TRNG is designed using two cascades of delay elements, one for the clock path, 
 the other for the data path. The cascades are tuned such that they produce a single bit of randomness 
-by forcing a flop at the end to be metastable. Several implementations of this concept have been 
-implemented within the literature at [add sources here], but the contribution of Ben-Romdhane et. al. was
+by forcing a flop at the end to be metastable. The contribution of Ben-Romdhane et. al. was
 to implement a version of this concept targeting ASICs on a CMOS 65nm process node chip provided by 
-STMicroelectronics.
+STMicroelectronics \cite{ben-romdhane_design_2013}.
 
 The primary mechanism for inducing metastability involves using two multiplexor chains
 to calibrate the TRNG such that the delay induced through each multiplexor chain causes
-several of the flops in the sampling flop chain to go metastable. This is a similar 
-concept to oscillator-based TRNGs, as they ideally capture transition points within the
+several of the flops in the sampling flop chain to go metastable \cite{ben-romdhane_design_2013}. 
+This is a similar concept to oscillator-based TRNGs, as they ideally capture transition points within the
 oscillator signal, except that the premise here is less about the jitter of the signal,
 but rather the flop's internal sampling structure settling finally on '0' or '1'. 
 
 The final implementation given by the authors did not pass all the given tests in the 
 AIS-31 standard statistical battery, and only one variant passed eight of the nine 
-tests, failing the entropy estimation test.
+tests, failing the entropy estimation test \cite{ben-romdhane_design_2013}.
 
 For the implementation given here, some liberties were taken in the implementation; 
 namely, the control of the coarse chains was automated by an internal set of counters

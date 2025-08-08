@@ -1,5 +1,6 @@
 docs/latex/*
 !docs/latex/*.tex
+!docs/latex/*.bib
 !docs/latex/figures
 
 **__pycache__**
