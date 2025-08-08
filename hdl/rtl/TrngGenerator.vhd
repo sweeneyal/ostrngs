@@ -35,13 +35,13 @@ entity TrngGenerator is
         i_resetn : in std_logic;
 
         -- entropy source selection
-        i_rng_addr  : in std_logic_vector(7 downto 0);
+        i_rng_addr   : in std_logic_vector(7 downto 0);
         -- entropy source sample clock
-        o_rng_clk   : out std_logic;
+        o_rng_clk    : out std_logic;
         -- entropy sample output 
-        o_rng_data  : out std_logic_vector(8 * cDataWidth_B - 1 downto 0);
+        o_rng_data   : out std_logic_vector(8 * cDataWidth_B - 1 downto 0);
         -- indicator that entropy sample is valid
-        o_rng_valid : out std_logic;
+        o_rng_dvalid : out std_logic;
 
         -- pll dynamic reconfiguration port address bus
         i_pll_daddr  : in std_logic_vector(6 downto 0);
@@ -87,8 +87,8 @@ architecture rtl of TrngGenerator is
 
     type rng_matrix_t is array (0 to cNumEntropySources - 1) of std_logic_vector(8 * cDataWidth_B - 1 downto 0);
     
-    signal rng       : rng_matrix_t := (others => (others => '0'));
-    signal rng_valid : std_logic_vector(cNumEntropySources - 1 downto 0) := (others => '0');
+    signal rng        : rng_matrix_t := (others => (others => '0'));
+    signal rng_dvalid : std_logic_vector(cNumEntropySources - 1 downto 0) := (others => '0');
     
     constant cNumClocks : natural := 6;
     type sel_matrix_t is array (0 to cNumEntropySources - 1) of std_logic_vector(cNumClocks - 2 downto 0);
@@ -129,9 +129,9 @@ begin
         o_clk  => rng_clk
     );
     
-    o_rng_clk   <= rng_clk;
-    o_rng_data  <= rng(to_integer(unsigned(i_rng_addr)));
-    o_rng_valid <= rng_valid(to_integer(unsigned(i_rng_addr)));
+    o_rng_clk    <= rng_clk;
+    o_rng_data   <= rng(to_integer(unsigned(i_rng_addr)));
+    o_rng_dvalid <= rng_dvalid(to_integer(unsigned(i_rng_addr)));
 
     gEntropySourceInstantiation: for g_ii in 0 to cNumEntropySources - 1 generate
         gMeshCoupledXor: if (cEntropySources(g_ii) = padded("MeshCoupledXor", 256)) generate
@@ -152,7 +152,7 @@ begin
             rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
 
             -- This entropy source generates a new random sample every clock cycle it is active.
-            rng_valid(g_ii) <= rng_resetn;
+            rng_dvalid(g_ii) <= rng_resetn;
         end generate gMeshCoupledXor;
 
         gOpenLoopMetaTrng: if (cEntropySources(g_ii) = padded("OpenLoopMetaTrng", 256)) generate
@@ -173,7 +173,7 @@ begin
             rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
 
             -- This entropy source generates a new random sample every clock cycle it is active.
-            rng_valid(g_ii) <= rng_resetn;
+            rng_dvalid(g_ii) <= rng_resetn;
         end generate gOpenLoopMetaTrng;
 
         gStrTrng: if (cEntropySources(g_ii) = padded("StrTrng", 256)) generate
@@ -194,7 +194,7 @@ begin
             rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
 
             -- This entropy source generates a new random sample every clock cycle it is active.
-            rng_valid(g_ii) <= rng_resetn;
+            rng_dvalid(g_ii) <= rng_resetn;
         end generate gStrTrng;
     end generate gEntropySourceInstantiation;
     
