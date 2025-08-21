@@ -9,6 +9,7 @@
 library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
+    use ieee.math_real.all;
 
 library ostrngs;
 
@@ -196,6 +197,39 @@ begin
             -- This entropy source generates a new random sample every clock cycle it is active.
             rng_dvalid(g_ii) <= rng_resetn;
         end generate gStrTrng;
+
+        gNonSynth: if (cEntropySources(g_ii) = padded("Simulation", 256)) generate
+
+            -- synthesis_translate off
+
+            SimulatedEntropySource: process(i_clk)
+                variable seed1, seed2 : integer := 999 / (g_ii + 1);
+
+                impure function rand_slv(len : integer) return std_logic_vector is
+                    variable r : real;
+                    variable slv : std_logic_vector(len - 1 downto 0);
+                begin
+                    for i in slv'range loop
+                        uniform(seed1, seed2, r);
+                        slv(i) := '1' when r > 0.5 else '0';
+                    end loop;
+                    return slv;
+                end function;
+            begin
+                if rising_edge(i_clk) then
+                    -- generate a random slv every clock cycle
+                    rng(g_ii) <= rand_slv(8 * cDataWidth_B);
+                    -- 
+                    -- This entropy source generates a new random sample every clock cycle it is active.
+                    rng_dvalid(g_ii) <= rng_resetn;
+                end if;
+            end process SimulatedEntropySource;
+
+            -- synthesis_translate on
+
+            sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
+
+        end generate gNonSynth;
     end generate gEntropySourceInstantiation;
     
 end architecture rtl;
