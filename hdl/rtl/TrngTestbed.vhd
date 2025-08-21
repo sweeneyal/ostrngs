@@ -10,20 +10,22 @@ library ostrngs;
 entity TrngTestbed is
     generic (
         -- Sets the total number of entropy sources to instantiate
-        cNumEntropySources : positive range 1 to 8 := 8;
+        cNumEntropySources    : positive range 1 to 8 := 8;
         -- Provides a mechanism to instantiate various unique entropy sources
-        cEntropySource00   : string := "MeshCoupledXor";
-        cEntropySource01   : string := "MeshCoupledXor";
-        cEntropySource02   : string := "MeshCoupledXor";
-        cEntropySource03   : string := "MeshCoupledXor";
-        cEntropySource04   : string := "MeshCoupledXor";
-        cEntropySource05   : string := "MeshCoupledXor";
-        cEntropySource06   : string := "MeshCoupledXor";
-        cEntropySource07   : string := "MeshCoupledXor";
+        cEntropySource00      : string := "MeshCoupledXor";
+        cEntropySource01      : string := "MeshCoupledXor";
+        cEntropySource02      : string := "MeshCoupledXor";
+        cEntropySource03      : string := "MeshCoupledXor";
+        cEntropySource04      : string := "MeshCoupledXor";
+        cEntropySource05      : string := "MeshCoupledXor";
+        cEntropySource06      : string := "MeshCoupledXor";
+        cEntropySource07      : string := "MeshCoupledXor";
         -- Fifo depth in groups of samples
-        cFifoDepth         : positive := 1024;
+        cFifoDepth            : positive := 1024;
         -- Fifo width in samples
-        cFifoWidth         : positive := 16
+        cFifoWidth            : positive := 16;
+        -- Memory access generic for default address samples are stored at
+        cMemoryDefaultAddress : std_logic_vector(31 downto 0) := x"FF000000"
     );
     port (
         -- system clock
@@ -106,7 +108,7 @@ entity TrngTestbed is
         o_m_axi_bready  : out std_logic;
 
         -- master axi read address channel
-        o_m_axi_araddr  : out std_logic_vector(9 downto 0);
+        o_m_axi_araddr  : out std_logic_vector(31 downto 0);
         -- master axi read address protection level
         o_m_axi_arprot  : out std_logic_vector(2 downto 0);
         -- master axi read address valid signal
@@ -115,7 +117,7 @@ entity TrngTestbed is
         i_m_axi_arready : in std_logic;
 
         -- master axi read data channel
-        i_m_axi_rdata   : in std_logic_vector(31 downto 0);
+        i_m_axi_rdata   : in std_logic_vector(8 * cFifoWidth - 1 downto 0);
         -- master axi read response indicator
         i_m_axi_rresp   : in std_logic_vector(1 downto 0);
         -- master axi read valid signal
@@ -157,13 +159,16 @@ architecture rtl of TrngTestbed is
         count : unsigned(23 downto 0);
         -- RNG Address is the selected entropy source
         rng_addr : std_logic_vector(7 downto 0);
+        -- Starting memory address for where to place entropy samples
+        mem_addr : std_logic_vector(31 downto 0);
     end record status_t;
 
     signal status : status_t := status_t'(
         mode     => (others => '0'),
         total    => (others => '0'),
         count    => (others => '0'),
-        rng_addr => (others => '0')
+        rng_addr => (others => '0'),
+        mem_addr => cMemoryDefaultAddress
     );
 
     type state_t is (IDLE, COLLECTING, SENDING);
@@ -291,6 +296,10 @@ begin
                                     -- OKAY RESPONSE
                                     status.rng_addr <= i_s_axi_wdata(7 downto 0);
                                     o_s_axi_bresp   <= "00";
+                                when "1000010100" =>
+                                    -- OKAY RESPONSE
+                                    status.mem_addr <= i_s_axi_wdata;
+                                    o_s_axi_bresp   <= "00";
                                 when others =>
                                     -- DECERR RESPONSE (Nothing at these addresses)
                                     o_s_axi_bresp <= "11";
@@ -361,6 +370,15 @@ begin
 
                                 axi_state <= READ_RESPONSE;
 
+                            -- Not expecting misaligned reads/writes
+                            when "1000010100" =>
+                                o_s_axi_rvalid <= '1';
+                                -- OKAY RESPONSE
+                                o_s_axi_rresp  <= "00";
+                                o_s_axi_rdata  <= status.mem_addr;
+
+                                axi_state <= READ_RESPONSE;
+
                             when others =>
                                 -- DECERR (INVALID ADDRESS)
                                 o_s_axi_rvalid <= '1';
@@ -387,6 +405,7 @@ begin
                 case state is
                     when IDLE =>
                         fifo_pop_reg <= '0';
+                        axi_awaddr   <= unsigned(status.mem_addr);
                         if (status.mode /= x"00") then
                             state <= COLLECTING;
                             status.count <= (others => '0');

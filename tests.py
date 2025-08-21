@@ -38,6 +38,6 @@ def encode(tb_cfg):
     return ", ".join(["%s:%s" % (key, str(tb_cfg[key])) for key in tb_cfg])
 
 # Run vunit function
-vu.add_compile_option('ghdl.a_flags', ['-frelaxed'])
-vu.set_sim_option('ghdl.elab_flags', ['-frelaxed'])
+vu.add_compile_option('ghdl.a_flags', ['-frelaxed', '-fsynopsys'])
+vu.set_sim_option('ghdl.elab_flags', ['-frelaxed', '-fsynopsys'])
 vu.main()
