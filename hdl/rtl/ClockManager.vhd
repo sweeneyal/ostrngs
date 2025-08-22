@@ -27,6 +27,7 @@ end entity ClockManager;
 
 architecture rtl of ClockManager is
     signal clkfbout : std_logic := '0';
+    signal reset    : std_logic := '0';
 begin
     
     -- PLLE2_ADV: Advanced Phase Locked Loop (PLL)
@@ -36,15 +37,15 @@ begin
     PLLE2_ADV_inst : PLLE2_ADV
     generic map (
         BANDWIDTH      => "OPTIMIZED",  -- OPTIMIZED, HIGH, LOW
-        CLKFBOUT_MULT  => 2,        -- Multiply value for all CLKOUT, (2-64)
+        CLKFBOUT_MULT  => 15,        -- Multiply value for all CLKOUT, (2-64)
         CLKFBOUT_PHASE => 0.0,     -- Phase offset in degrees of CLKFB, (-360.000-360.000).
 
         -- CLKIN_PERIOD: Input clock period in nS to ps resolution (i.e. 33.333 is 30 MHz).
-        CLKIN1_PERIOD => 0.0,
+        CLKIN1_PERIOD => 10.0,
         CLKIN2_PERIOD => 0.0,
 
         -- CLKOUT0_DIVIDE - CLKOUT5_DIVIDE: Divide amount for CLKOUT (1-128)
-        CLKOUT0_DIVIDE => 1,
+        CLKOUT0_DIVIDE => 15,
         CLKOUT1_DIVIDE => 1,
         CLKOUT2_DIVIDE => 1,
         CLKOUT3_DIVIDE => 1,
@@ -67,7 +68,7 @@ begin
         CLKOUT4_PHASE => 0.0,
         CLKOUT5_PHASE => 0.0,
         COMPENSATION => "ZHOLD",   -- ZHOLD, BUF_IN, EXTERNAL, INTERNAL
-        DIVCLK_DIVIDE => 2,        -- Master division value (1-56)
+        DIVCLK_DIVIDE => 1,        -- Master division value (1-56)
 
         -- REF_JITTER: Reference input jitter in UI (0.000-0.999).
         REF_JITTER1  => 0.0,
@@ -100,17 +101,19 @@ begin
         -- Control Ports: 1-bit (each) input: PLL control ports
         CLKINSEL => '1',      -- 1-bit input: Clock select, High=CLKIN1 Low=CLKIN2
         PWRDWN   => '0',      -- 1-bit input: Power-down
-        RST      => i_resetn, -- 1-bit input: Reset
+        RST      => reset, -- 1-bit input: Reset
         
         
         -- Feedback Clocks: Clock feedback ports
         CLKFBOUT => clkfbout,     -- 1-bit output: Feedback clock
         LOCKED   => o_pll_locked, -- 1-bit output: LOCK
-        CLKFBIN => clkfbout       -- 1-bit input: Feedback clock
+        CLKFBIN  => clkfbout       -- 1-bit input: Feedback clock
     );
 
     -- End of PLLE2_ADV_inst instantiation
     
+    reset <= not i_resetn;
+
 end architecture rtl;
 
 -----------------------------------------------------------------------------------------------------------------------

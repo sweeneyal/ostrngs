@@ -147,9 +147,10 @@ begin
             resetn_a <= '0';
             timer := 2;
         elsif rising_edge(i_clka) then
-            timer := timer - 1;
             if (timer = 0) then
                 resetn_a <= '1';
+            else
+                timer := timer - 1;
             end if;
         end if;
     end process ASidePulseExtender;
@@ -161,9 +162,10 @@ begin
             resetn_b <= '0';
             timer := 2;
         elsif rising_edge(i_clkb) then
-            timer := timer - 1;
             if (timer = 0) then
                 resetn_b <= '1';
+            else
+                timer := timer - 1;
             end if;
         end if;
     end process BSidePulseExtender;

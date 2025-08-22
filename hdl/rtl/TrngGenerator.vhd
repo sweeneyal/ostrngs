@@ -134,6 +134,21 @@ begin
     o_rng_data   <= rng(to_integer(unsigned(i_rng_addr)));
     o_rng_dvalid <= rng_dvalid(to_integer(unsigned(i_rng_addr)));
 
+    RngResetnPulseExtender: process(i_clk, i_resetn)
+        variable timer : natural range 0 to 2 := 2;
+    begin
+        if (i_resetn = '0') then
+            rng_resetn <= '0';
+            timer := 2;
+        elsif rising_edge(i_clk) then
+            if (timer = 0) then
+                rng_resetn <= '1';
+            else
+                timer := timer - 1;
+            end if;
+        end if;
+    end process RngResetnPulseExtender;
+
     gEntropySourceInstantiation: for g_ii in 0 to cNumEntropySources - 1 generate
         gMeshCoupledXor: if (cEntropySources(g_ii) = padded("MeshCoupledXor", 256)) generate
             signal local_rng : std_logic_vector(5 downto 0) := (others => '0');
@@ -202,7 +217,7 @@ begin
 
             -- synthesis_translate off
 
-            SimulatedEntropySource: process(i_clk)
+            SimulatedEntropySource: process(rng_clk)
                 variable seed1, seed2 : integer := 999 / (g_ii + 1);
 
                 impure function rand_slv(len : integer) return std_logic_vector is
@@ -216,7 +231,7 @@ begin
                     return slv;
                 end function;
             begin
-                if rising_edge(i_clk) then
+                if rising_edge(rng_clk) then
                     -- generate a random slv every clock cycle
                     rng(g_ii) <= rand_slv(8 * cDataWidth_B);
                     -- 
