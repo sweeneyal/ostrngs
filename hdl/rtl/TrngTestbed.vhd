@@ -161,6 +161,8 @@ architecture rtl of TrngTestbed is
         rng_addr : std_logic_vector(7 downto 0);
         -- Starting memory address for where to place entropy samples
         mem_addr : std_logic_vector(31 downto 0);
+        -- Health and status, e.g. PLL lock status
+        health   : std_logic_vector(7 downto 0);
     end record status_t;
 
     signal status : status_t := status_t'(
@@ -168,7 +170,8 @@ architecture rtl of TrngTestbed is
         total    => (others => '0'),
         count    => (others => '0'),
         rng_addr => (others => '0'),
-        mem_addr => cMemoryDefaultAddress
+        mem_addr => cMemoryDefaultAddress,
+        health   => (others => '0')
     );
 
     type state_t is (IDLE, COLLECTING, SENDING);
@@ -177,6 +180,7 @@ architecture rtl of TrngTestbed is
     signal axi_awready : std_logic := '0';
     signal axi_wready  : std_logic := '0';
     signal axi_awaddr  : unsigned(31 downto 0) := (others => '0');
+    signal pll_locked  : std_logic := '0';
 begin
     
     eSandbox : entity ostrngs.TrngSandbox
@@ -216,7 +220,7 @@ begin
         i_pll_di     => i_s_axi_wdata(15 downto 0),
         o_pll_drdy   => pll_drdy,
         o_pll_do     => pll_do,
-        o_pll_locked => open
+        o_pll_locked => pll_locked
     );
 
     PllAccessSignals: process(axi_state, addr, i_s_axi_wstrb, fifo_dvalid)
@@ -300,6 +304,9 @@ begin
                                     -- OKAY RESPONSE
                                     status.mem_addr <= i_s_axi_wdata;
                                     o_s_axi_bresp   <= "00";
+                                when "1000011000" =>
+                                    -- SLVERR RESPONSE (status.health is read only)
+                                    o_s_axi_bresp <= "10";
                                 when others =>
                                     -- DECERR RESPONSE (Nothing at these addresses)
                                     o_s_axi_bresp <= "11";
@@ -379,6 +386,15 @@ begin
 
                                 axi_state <= READ_RESPONSE;
 
+                            -- Not expecting misaligned reads/writes
+                            when "1000011000" =>
+                                o_s_axi_rvalid <= '1';
+                                -- OKAY RESPONSE
+                                o_s_axi_rresp  <= "00";
+                                o_s_axi_rdata  <= x"000000" & status.health;
+
+                                axi_state <= READ_RESPONSE;
+
                             when others =>
                                 -- DECERR (INVALID ADDRESS)
                                 o_s_axi_rvalid <= '1';
@@ -447,6 +463,8 @@ begin
                             end if;
                         end if;
                 end case;
+
+                status.health(0) <= pll_locked;
             end if;
         end if;
     end process StateMachine;

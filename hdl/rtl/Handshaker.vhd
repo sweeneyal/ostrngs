@@ -7,8 +7,8 @@ library ieee;
 
 entity Handshaker is
     generic (
-        cDataWidth_b : positive := 1;
-        cNumStages   : positive := 2
+        cDataWidth_b : positive;
+        cNumStages   : positive
     );
     port (
         i_clka   : in std_logic;
