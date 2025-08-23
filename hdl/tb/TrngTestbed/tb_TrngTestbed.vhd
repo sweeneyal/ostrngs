@@ -10,6 +10,8 @@ library osvvm;
 
 library ostrngs;
 
+library tb_ostrngs;
+
 entity tb_TrngTestbed is
     generic (runner_cfg : string);
 end entity tb_TrngTestbed;
@@ -129,6 +131,50 @@ architecture tb of tb_TrngTestbed is
             mosi_axi.bready  <= not bvalid;
         end loop;
     end procedure;
+
+    procedure axi_read(
+        signal mosi_axi : inout mosi_axi_lite_t;
+        signal miso_axi : in miso_axi_lite_t;
+        constant addr   : in std_logic_vector;
+        constant prot   : in std_logic_vector;
+        variable data   : out std_logic_vector
+    ) is 
+        variable arready : std_logic := '0';
+        variable rvalid  : std_logic := '0';
+    begin
+        -- clear state variables
+        arready := '0';
+        rvalid  := '0';
+
+        -- set the address fields for the address write channel
+        mosi_axi.araddr  <= addr;
+        mosi_axi.arprot  <= prot;
+        mosi_axi.arvalid <= '1';
+
+        -- set the read ready signal
+        mosi_axi.rready  <= '1';
+
+        -- as long as one of the two channels havent been accepted, loop
+        while (arready = '0' or rvalid = '0') loop
+            -- Wait until something on these three signals update.
+            wait until ((miso_axi.arready = '1') or (miso_axi.rvalid = '1'));
+
+            -- If its the address write channel, clean up after the address write.
+            if (miso_axi.arready = '1' and mosi_axi.arvalid = '1') then
+                arready := '1';
+            end if;
+
+            -- If its the response channel, clean up after the response.
+            if (miso_axi.rvalid = '1' and mosi_axi.rready = '1') then
+                data   := miso_axi.rdata;
+                rvalid := '1';
+            end if;
+
+            wait until rising_edge(clk);
+            mosi_axi.arvalid <= not arready;
+            mosi_axi.rready  <= not rvalid;
+        end loop;
+    end procedure;
 begin
 
     CreateClock(clk=>clk, period=>10 ns);
@@ -195,8 +241,47 @@ begin
         i_m_axi_rvalid  => in_m_axi.rvalid,
         o_m_axi_rready  => out_m_axi.rready
     );
+
+    -- Build a crossbar interconnect here to allow both testbench control of the RAM
+    -- and also TrngTestbed control
+
+    eRam : entity tb_ostrngs.RandomAxiRam
+    generic map (
+        cAddressWidth_b     => 32,
+        cCachelineSize_B    => 16,
+        cCheckUninitialized => false,
+        cVerboseMode        => false
+    ) port map (
+        i_clk    => clk,
+        i_resetn => resetn,
+
+        i_s_axi_awaddr  => out_m_axi.awaddr,
+        i_s_axi_awprot  => out_m_axi.awprot,
+        i_s_axi_awvalid => out_m_axi.awvalid,
+        o_s_axi_awready => in_m_axi.awready,
+
+        i_s_axi_wdata   => out_m_axi.wdata,
+        i_s_axi_wstrb   => out_m_axi.wstrb,
+        i_s_axi_wvalid  => out_m_axi.wvalid,
+        o_s_axi_wready  => in_m_axi.wready,
+
+        o_s_axi_bresp   => in_m_axi.bresp,
+        o_s_axi_bvalid  => in_m_axi.bvalid,
+        i_s_axi_bready  => out_m_axi.bready,
+
+        i_s_axi_araddr  => out_m_axi.araddr,
+        i_s_axi_arprot  => out_m_axi.arprot,
+        i_s_axi_arvalid => out_m_axi.arvalid,
+        o_s_axi_arready => in_m_axi.arready,
+
+        o_s_axi_rdata   => in_m_axi.rdata,
+        o_s_axi_rresp   => in_m_axi.rresp,
+        o_s_axi_rvalid  => in_m_axi.rvalid,
+        i_s_axi_rready  => out_m_axi.rready
+    );
     
     TestRunner : process
+        variable rdata : std_logic_vector(31 downto 0);
     begin
         test_runner_setup(runner, runner_cfg);
   
@@ -226,13 +311,37 @@ begin
                 check(false);
             elsif run("t_dma_nist_testing") then
                 info("Checking that testbed allows for appropriate data collection for NIST testing");
-                check(false);
+                wait until rising_edge(clk);
+                wait for 100 ps;
+                resetn <= '1';
+                axi_write(in_s_axi, out_s_axi, "1000001000", "000", x"00000FFF", "1111");
+                wait for 50 ns;
+                axi_write(in_s_axi, out_s_axi, "1000010000", "000", x"00000003", "1111");
+
+                while (rdata /= x"00000001") loop
+                    wait for 25 ns;
+                    axi_read(in_s_axi, out_s_axi, "1000011000", "000", rdata);
+                end loop;
+
+                wait for 50 ns;
+                axi_write(in_s_axi, out_s_axi, "1000000100", "000", x"00000001", "1111");
+
+                rdata := x"00000001";
+                while (rdata = x"00000001") loop
+                    wait for 50 ns;
+                    axi_read(in_s_axi, out_s_axi, "1000000100", "000", rdata);
+                end loop;
+
+                -- Validate that performance worked here.
+                -- Eyeball test shows that it works, just add validation.
+                -- That will likely include checking address ranges and that we never
+                -- exceeded the fifo.
             end if;
         end loop;
     
         test_runner_cleanup(runner);
     end process;
 
-    test_runner_watchdog(runner, 10 us);
+    test_runner_watchdog(runner, 50 us);
     
 end architecture tb;

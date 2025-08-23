@@ -140,6 +140,8 @@ architecture rtl of TrngTestbed is
     signal fifo_pop_reg : std_logic := '0';
     signal fifo_data    : std_logic_vector(8 * cDataWidth_B * cFifoWidth - 1 downto 0) := (others => '0');
     signal fifo_dvalid  : std_logic := '0';
+    signal fifo_empty   : std_logic := '0';
+    signal fifo_aempty  : std_logic := '0';
 
     signal pll_den  : std_logic := '0';
     signal pll_dwe  : std_logic := '0';
@@ -211,8 +213,8 @@ begin
         o_fifo_dvalid => fifo_dvalid,
         o_fifo_full   => open,
         o_fifo_afull  => open,
-        o_fifo_aempty => open,
-        o_fifo_empty  => open,
+        o_fifo_aempty => fifo_aempty,
+        o_fifo_empty  => fifo_empty,
 
         i_pll_daddr  => addr(8 downto 2),
         i_pll_den    => pll_den,
@@ -223,7 +225,7 @@ begin
         o_pll_locked => pll_locked
     );
 
-    PllAccessSignals: process(axi_state, addr, i_s_axi_wstrb, fifo_dvalid)
+    PllAccessSignals: process(axi_state, addr, i_s_axi_wstrb, fifo_dvalid, fifo_pop_reg)
     begin
         if (axi_state = WRITE_SEQUENCE or axi_state = READ_SEQUENCE) then
             pll_den <= not addr(9);
@@ -425,10 +427,20 @@ begin
                         if (status.mode /= x"00") then
                             state <= COLLECTING;
                             status.count <= (others => '0');
-                            fifo_pop_reg <= '1';
+                            if (fifo_aempty = '1') then
+                                fifo_pop_reg <= '0';
+                            else
+                                fifo_pop_reg <= not fifo_dvalid;
+                            end if;
                         end if;
 
                     when COLLECTING =>
+                        if (fifo_aempty = '1') then
+                            fifo_pop_reg <= '0';
+                        else
+                            fifo_pop_reg <= not fifo_dvalid;
+                        end if;
+
                         if (fifo_dvalid = '1') then
                             o_m_axi_awaddr  <= std_logic_vector(axi_awaddr);
                             o_m_axi_awvalid <= '1';
@@ -436,7 +448,6 @@ begin
                             o_m_axi_wvalid  <= '1';
 
                             state        <= SENDING;
-                            fifo_pop_reg <= '0';
                             axi_awaddr   <= axi_awaddr + cFifoWidth * cDataWidth_B;
                         end if;
                         o_m_axi_bready <= '1';
