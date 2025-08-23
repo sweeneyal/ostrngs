@@ -76,6 +76,11 @@ architecture rtl of DualClockFifo is
     signal resetn_b : std_logic := '0';
 begin
     
+    o_fifo_full   <= fifo_full;
+    o_fifo_afull  <= fifo_afull;
+    o_fifo_aempty <= fifo_aempty;
+    o_fifo_empty  <= fifo_empty;
+
     eBram : entity ostrngs.DualClockBram
     generic map (
         cAddressWidth_b => cAddressWidth_b,
