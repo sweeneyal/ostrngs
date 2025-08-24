@@ -1,4 +1,11 @@
 -----------------------------------------------------------------------------------------------------------------------
+-- entity: ClockMux
+--
+-- library: ostrngs
+--
+-- description:
+--       Wrapper around AMD-Xilinx PLLE2_ADV component, providing access to the PLL to configure the various clocks.
+--
 -----------------------------------------------------------------------------------------------------------------------
 
 library ieee;

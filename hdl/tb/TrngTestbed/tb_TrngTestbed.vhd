@@ -17,7 +17,7 @@ entity tb_TrngTestbed is
 end entity tb_TrngTestbed;
 
 architecture tb of tb_TrngTestbed is
-    type mosi_axi_lite_t is record
+    type ms_axi_lite_t is record
         awaddr  : std_logic_vector;
         awprot  : std_logic_vector(2 downto 0);
         awvalid : std_logic;
@@ -33,9 +33,9 @@ architecture tb of tb_TrngTestbed is
         arvalid : std_logic;
 
         rready  : std_logic;
-    end record mosi_axi_lite_t;
+    end record ms_axi_lite_t;
 
-    type miso_axi_lite_t is record
+    type sm_axi_lite_t is record
         awready : std_logic;
 
         wready  : std_logic;
@@ -48,27 +48,27 @@ architecture tb of tb_TrngTestbed is
         rdata   : std_logic_vector;
         rresp   : std_logic_vector(1 downto 0);
         rvalid  : std_logic;
-    end record miso_axi_lite_t;
+    end record sm_axi_lite_t;
 
-    signal in_s_axi : mosi_axi_lite_t(
+    signal in_s_axi : ms_axi_lite_t(
         awaddr(9 downto 0), 
         wdata(31 downto 0), 
         wstrb(3 downto 0), 
         araddr(9 downto 0)
     );
 
-    signal out_m_axi : mosi_axi_lite_t(
+    signal out_m_axi : ms_axi_lite_t(
         awaddr(31 downto 0), 
         wdata(127 downto 0), 
         wstrb(15 downto 0), 
         araddr(31 downto 0)
     );
 
-    signal out_s_axi : miso_axi_lite_t(
+    signal out_s_axi : sm_axi_lite_t(
         rdata(31 downto 0)
     );
 
-    signal in_m_axi : miso_axi_lite_t(
+    signal in_m_axi : sm_axi_lite_t(
         rdata(127 downto 0)
     );
 
@@ -76,8 +76,8 @@ architecture tb of tb_TrngTestbed is
     signal resetn : std_logic := '0';
 
     procedure axi_write(
-        signal mosi_axi : inout mosi_axi_lite_t;
-        signal miso_axi : in miso_axi_lite_t;
+        signal mosi_axi : inout ms_axi_lite_t;
+        signal miso_axi : in sm_axi_lite_t;
         constant addr   : in std_logic_vector;
         constant prot   : in std_logic_vector;
         constant data   : in std_logic_vector;
@@ -133,8 +133,8 @@ architecture tb of tb_TrngTestbed is
     end procedure;
 
     procedure axi_read(
-        signal mosi_axi : inout mosi_axi_lite_t;
-        signal miso_axi : in miso_axi_lite_t;
+        signal mosi_axi : inout ms_axi_lite_t;
+        signal miso_axi : in sm_axi_lite_t;
         constant addr   : in std_logic_vector;
         constant prot   : in std_logic_vector;
         variable data   : out std_logic_vector
@@ -193,53 +193,53 @@ begin
         i_clk    => clk,
         i_resetn => resetn,
 
-        i_s_axi_awaddr  => in_s_axi.awaddr,
-        i_s_axi_awprot  => in_s_axi.awprot,
-        i_s_axi_awvalid => in_s_axi.awvalid,
-        o_s_axi_awready => out_s_axi.awready,
+        s_axi_trng_awaddr  => in_s_axi.awaddr,
+        s_axi_trng_awprot  => in_s_axi.awprot,
+        s_axi_trng_awvalid => in_s_axi.awvalid,
+        s_axi_trng_awready => out_s_axi.awready,
 
-        i_s_axi_wdata   => in_s_axi.wdata,
-        i_s_axi_wstrb   => in_s_axi.wstrb,
-        i_s_axi_wvalid  => in_s_axi.wvalid,
-        o_s_axi_wready  => out_s_axi.wready,
+        s_axi_trng_wdata   => in_s_axi.wdata,
+        s_axi_trng_wstrb   => in_s_axi.wstrb,
+        s_axi_trng_wvalid  => in_s_axi.wvalid,
+        s_axi_trng_wready  => out_s_axi.wready,
 
-        o_s_axi_bresp   => out_s_axi.bresp,
-        o_s_axi_bvalid  => out_s_axi.bvalid,
-        i_s_axi_bready  => in_s_axi.bready,
+        s_axi_trng_bresp   => out_s_axi.bresp,
+        s_axi_trng_bvalid  => out_s_axi.bvalid,
+        s_axi_trng_bready  => in_s_axi.bready,
 
-        i_s_axi_araddr  => in_s_axi.araddr,
-        i_s_axi_arprot  => in_s_axi.arprot,
-        i_s_axi_arvalid => in_s_axi.arvalid,
-        o_s_axi_arready => out_s_axi.arready,
+        s_axi_trng_araddr  => in_s_axi.araddr,
+        s_axi_trng_arprot  => in_s_axi.arprot,
+        s_axi_trng_arvalid => in_s_axi.arvalid,
+        s_axi_trng_arready => out_s_axi.arready,
 
-        o_s_axi_rdata   => out_s_axi.rdata,
-        o_s_axi_rresp   => out_s_axi.rresp,
-        o_s_axi_rvalid  => out_s_axi.rvalid,
-        i_s_axi_rready  => in_s_axi.rready,
+        s_axi_trng_rdata   => out_s_axi.rdata,
+        s_axi_trng_rresp   => out_s_axi.rresp,
+        s_axi_trng_rvalid  => out_s_axi.rvalid,
+        s_axi_trng_rready  => in_s_axi.rready,
 
-        o_m_axi_awaddr  => out_m_axi.awaddr,
-        o_m_axi_awprot  => out_m_axi.awprot,
-        o_m_axi_awvalid => out_m_axi.awvalid,
-        i_m_axi_awready => in_m_axi.awready,
+        m_axi_mem_awaddr  => out_m_axi.awaddr,
+        m_axi_mem_awprot  => out_m_axi.awprot,
+        m_axi_mem_awvalid => out_m_axi.awvalid,
+        m_axi_mem_awready => in_m_axi.awready,
 
-        o_m_axi_wdata   => out_m_axi.wdata,
-        o_m_axi_wstrb   => out_m_axi.wstrb,
-        o_m_axi_wvalid  => out_m_axi.wvalid,
-        i_m_axi_wready  => in_m_axi.wready,
+        m_axi_mem_wdata   => out_m_axi.wdata,
+        m_axi_mem_wstrb   => out_m_axi.wstrb,
+        m_axi_mem_wvalid  => out_m_axi.wvalid,
+        m_axi_mem_wready  => in_m_axi.wready,
 
-        i_m_axi_bresp   => in_m_axi.bresp,
-        i_m_axi_bvalid  => in_m_axi.bvalid,
-        o_m_axi_bready  => out_m_axi.bready,
+        m_axi_mem_bresp   => in_m_axi.bresp,
+        m_axi_mem_bvalid  => in_m_axi.bvalid,
+        m_axi_mem_bready  => out_m_axi.bready,
 
-        o_m_axi_araddr  => out_m_axi.araddr,
-        o_m_axi_arprot  => out_m_axi.arprot,
-        o_m_axi_arvalid => out_m_axi.arvalid,
-        i_m_axi_arready => in_m_axi.arready,
+        m_axi_mem_araddr  => out_m_axi.araddr,
+        m_axi_mem_arprot  => out_m_axi.arprot,
+        m_axi_mem_arvalid => out_m_axi.arvalid,
+        m_axi_mem_arready => in_m_axi.arready,
 
-        i_m_axi_rdata   => in_m_axi.rdata,
-        i_m_axi_rresp   => in_m_axi.rresp,
-        i_m_axi_rvalid  => in_m_axi.rvalid,
-        o_m_axi_rready  => out_m_axi.rready
+        m_axi_mem_rdata   => in_m_axi.rdata,
+        m_axi_mem_rresp   => in_m_axi.rresp,
+        m_axi_mem_rvalid  => in_m_axi.rvalid,
+        m_axi_mem_rready  => out_m_axi.rready
     );
 
     -- Build a crossbar interconnect here to allow both testbench control of the RAM
@@ -342,6 +342,6 @@ begin
         test_runner_cleanup(runner);
     end process;
 
-    test_runner_watchdog(runner, 50 us);
+    test_runner_watchdog(runner, 100 us);
     
 end architecture tb;

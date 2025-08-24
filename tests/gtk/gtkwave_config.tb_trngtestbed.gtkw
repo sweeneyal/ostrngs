@@ -1,0 +1,179 @@
+[*]
+[*] GTKWave Analyzer v3.4.0 (w)1999-2022 BSI
+[*] Sun Aug 24 00:53:41 2025
+[*]
+[dumpfile] "/home/asweeney/Projects/Masters/classes/CPE_695/build/ostrngs/vunit_out/test_output/tb_ostrngs.tb_trngtestbed.t_dma_nist_testing_e9a5b4dd613891c293fb06b2b3e45c9ff6904a37/ghdl/wave.ghw"
+[dumpfile_mtime] "Sun Aug 24 00:52:52 2025"
+[dumpfile_size] 24678428
+[savefile] "/home/asweeney/Projects/Masters/classes/CPE_695/build/ostrngs/tests/gtk/gtkwave_config.tb_trngtestbed.gtkw"
+[timestart] 0
+[size] 1854 1006
+[pos] -1 -1
+*-32.822212 24300000000 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0
+[markername] AA
+[markername] BB
+[markername] CC
+[markername] DD
+[markername] EE
+[markername] FF
+[markername] GG
+[markername] HH
+[markername] II
+[markername] JJ
+[markername] KK
+[markername] LL
+[markername] MM
+[markername] NN
+[markername] OO
+[markername] PP
+[markername] QQ
+[markername] RR
+[markername] SS
+[markername] TT
+[markername] UU
+[markername] VV
+[markername] WW
+[markername] XX
+[markername] YY
+[markername] ZZ
+[treeopen] top.
+[treeopen] top.tb_trngtestbed.
+[treeopen] top.tb_trngtestbed.edut.
+[sst_width] 300
+[signals_width] 435
+[sst_expanded] 1
+[sst_vpaned_height] 289
+@28
+top.tb_trngtestbed.clk
+top.tb_trngtestbed.resetn
+@200
+-
+-Top2TTB AXI
+@c00022
+#{top.tb_trngtestbed.in_s_axi.awaddr[9:0]} top.tb_trngtestbed.in_s_axi.awaddr[9] top.tb_trngtestbed.in_s_axi.awaddr[8] top.tb_trngtestbed.in_s_axi.awaddr[7] top.tb_trngtestbed.in_s_axi.awaddr[6] top.tb_trngtestbed.in_s_axi.awaddr[5] top.tb_trngtestbed.in_s_axi.awaddr[4] top.tb_trngtestbed.in_s_axi.awaddr[3] top.tb_trngtestbed.in_s_axi.awaddr[2] top.tb_trngtestbed.in_s_axi.awaddr[1] top.tb_trngtestbed.in_s_axi.awaddr[0]
+@28
+top.tb_trngtestbed.in_s_axi.awaddr[9]
+top.tb_trngtestbed.in_s_axi.awaddr[8]
+top.tb_trngtestbed.in_s_axi.awaddr[7]
+top.tb_trngtestbed.in_s_axi.awaddr[6]
+top.tb_trngtestbed.in_s_axi.awaddr[5]
+top.tb_trngtestbed.in_s_axi.awaddr[4]
+top.tb_trngtestbed.in_s_axi.awaddr[3]
+top.tb_trngtestbed.in_s_axi.awaddr[2]
+top.tb_trngtestbed.in_s_axi.awaddr[1]
+top.tb_trngtestbed.in_s_axi.awaddr[0]
+@1401200
+-group_end
+@28
+#{top.tb_trngtestbed.in_s_axi.awprot[2:0]} top.tb_trngtestbed.in_s_axi.awprot[2] top.tb_trngtestbed.in_s_axi.awprot[1] top.tb_trngtestbed.in_s_axi.awprot[0]
+top.tb_trngtestbed.in_s_axi.awvalid
+top.tb_trngtestbed.out_s_axi.awready
+@200
+-
+@c00022
+#{top.tb_trngtestbed.in_s_axi.wdata[31:0]} top.tb_trngtestbed.in_s_axi.wdata[31] top.tb_trngtestbed.in_s_axi.wdata[30] top.tb_trngtestbed.in_s_axi.wdata[29] top.tb_trngtestbed.in_s_axi.wdata[28] top.tb_trngtestbed.in_s_axi.wdata[27] top.tb_trngtestbed.in_s_axi.wdata[26] top.tb_trngtestbed.in_s_axi.wdata[25] top.tb_trngtestbed.in_s_axi.wdata[24] top.tb_trngtestbed.in_s_axi.wdata[23] top.tb_trngtestbed.in_s_axi.wdata[22] top.tb_trngtestbed.in_s_axi.wdata[21] top.tb_trngtestbed.in_s_axi.wdata[20] top.tb_trngtestbed.in_s_axi.wdata[19] top.tb_trngtestbed.in_s_axi.wdata[18] top.tb_trngtestbed.in_s_axi.wdata[17] top.tb_trngtestbed.in_s_axi.wdata[16] top.tb_trngtestbed.in_s_axi.wdata[15] top.tb_trngtestbed.in_s_axi.wdata[14] top.tb_trngtestbed.in_s_axi.wdata[13] top.tb_trngtestbed.in_s_axi.wdata[12] top.tb_trngtestbed.in_s_axi.wdata[11] top.tb_trngtestbed.in_s_axi.wdata[10] top.tb_trngtestbed.in_s_axi.wdata[9] top.tb_trngtestbed.in_s_axi.wdata[8] top.tb_trngtestbed.in_s_axi.wdata[7] top.tb_trngtestbed.in_s_axi.wdata[6] top.tb_trngtestbed.in_s_axi.wdata[5] top.tb_trngtestbed.in_s_axi.wdata[4] top.tb_trngtestbed.in_s_axi.wdata[3] top.tb_trngtestbed.in_s_axi.wdata[2] top.tb_trngtestbed.in_s_axi.wdata[1] top.tb_trngtestbed.in_s_axi.wdata[0]
+@28
+top.tb_trngtestbed.in_s_axi.wdata[31]
+top.tb_trngtestbed.in_s_axi.wdata[30]
+top.tb_trngtestbed.in_s_axi.wdata[29]
+top.tb_trngtestbed.in_s_axi.wdata[28]
+top.tb_trngtestbed.in_s_axi.wdata[27]
+top.tb_trngtestbed.in_s_axi.wdata[26]
+top.tb_trngtestbed.in_s_axi.wdata[25]
+top.tb_trngtestbed.in_s_axi.wdata[24]
+top.tb_trngtestbed.in_s_axi.wdata[23]
+top.tb_trngtestbed.in_s_axi.wdata[22]
+top.tb_trngtestbed.in_s_axi.wdata[21]
+top.tb_trngtestbed.in_s_axi.wdata[20]
+top.tb_trngtestbed.in_s_axi.wdata[19]
+top.tb_trngtestbed.in_s_axi.wdata[18]
+top.tb_trngtestbed.in_s_axi.wdata[17]
+top.tb_trngtestbed.in_s_axi.wdata[16]
+top.tb_trngtestbed.in_s_axi.wdata[15]
+top.tb_trngtestbed.in_s_axi.wdata[14]
+top.tb_trngtestbed.in_s_axi.wdata[13]
+top.tb_trngtestbed.in_s_axi.wdata[12]
+top.tb_trngtestbed.in_s_axi.wdata[11]
+top.tb_trngtestbed.in_s_axi.wdata[10]
+top.tb_trngtestbed.in_s_axi.wdata[9]
+top.tb_trngtestbed.in_s_axi.wdata[8]
+top.tb_trngtestbed.in_s_axi.wdata[7]
+top.tb_trngtestbed.in_s_axi.wdata[6]
+top.tb_trngtestbed.in_s_axi.wdata[5]
+top.tb_trngtestbed.in_s_axi.wdata[4]
+top.tb_trngtestbed.in_s_axi.wdata[3]
+top.tb_trngtestbed.in_s_axi.wdata[2]
+top.tb_trngtestbed.in_s_axi.wdata[1]
+top.tb_trngtestbed.in_s_axi.wdata[0]
+@1401200
+-group_end
+@22
+#{top.tb_trngtestbed.in_s_axi.wstrb[3:0]} top.tb_trngtestbed.in_s_axi.wstrb[3] top.tb_trngtestbed.in_s_axi.wstrb[2] top.tb_trngtestbed.in_s_axi.wstrb[1] top.tb_trngtestbed.in_s_axi.wstrb[0]
+@28
+top.tb_trngtestbed.in_s_axi.wvalid
+top.tb_trngtestbed.out_s_axi.wready
+@200
+-
+@28
+top.tb_trngtestbed.in_s_axi.bready
+#{top.tb_trngtestbed.out_s_axi.bresp[1:0]} top.tb_trngtestbed.out_s_axi.bresp[1] top.tb_trngtestbed.out_s_axi.bresp[0]
+top.tb_trngtestbed.out_s_axi.bvalid
+@200
+-
+@22
+#{top.tb_trngtestbed.in_s_axi.araddr[9:0]} top.tb_trngtestbed.in_s_axi.araddr[9] top.tb_trngtestbed.in_s_axi.araddr[8] top.tb_trngtestbed.in_s_axi.araddr[7] top.tb_trngtestbed.in_s_axi.araddr[6] top.tb_trngtestbed.in_s_axi.araddr[5] top.tb_trngtestbed.in_s_axi.araddr[4] top.tb_trngtestbed.in_s_axi.araddr[3] top.tb_trngtestbed.in_s_axi.araddr[2] top.tb_trngtestbed.in_s_axi.araddr[1] top.tb_trngtestbed.in_s_axi.araddr[0]
+@28
+#{top.tb_trngtestbed.in_s_axi.arprot[2:0]} top.tb_trngtestbed.in_s_axi.arprot[2] top.tb_trngtestbed.in_s_axi.arprot[1] top.tb_trngtestbed.in_s_axi.arprot[0]
+top.tb_trngtestbed.in_s_axi.arvalid
+top.tb_trngtestbed.out_s_axi.arready
+@200
+-
+@28
+top.tb_trngtestbed.in_s_axi.rready
+@22
+#{top.tb_trngtestbed.out_s_axi.rdata[31:0]} top.tb_trngtestbed.out_s_axi.rdata[31] top.tb_trngtestbed.out_s_axi.rdata[30] top.tb_trngtestbed.out_s_axi.rdata[29] top.tb_trngtestbed.out_s_axi.rdata[28] top.tb_trngtestbed.out_s_axi.rdata[27] top.tb_trngtestbed.out_s_axi.rdata[26] top.tb_trngtestbed.out_s_axi.rdata[25] top.tb_trngtestbed.out_s_axi.rdata[24] top.tb_trngtestbed.out_s_axi.rdata[23] top.tb_trngtestbed.out_s_axi.rdata[22] top.tb_trngtestbed.out_s_axi.rdata[21] top.tb_trngtestbed.out_s_axi.rdata[20] top.tb_trngtestbed.out_s_axi.rdata[19] top.tb_trngtestbed.out_s_axi.rdata[18] top.tb_trngtestbed.out_s_axi.rdata[17] top.tb_trngtestbed.out_s_axi.rdata[16] top.tb_trngtestbed.out_s_axi.rdata[15] top.tb_trngtestbed.out_s_axi.rdata[14] top.tb_trngtestbed.out_s_axi.rdata[13] top.tb_trngtestbed.out_s_axi.rdata[12] top.tb_trngtestbed.out_s_axi.rdata[11] top.tb_trngtestbed.out_s_axi.rdata[10] top.tb_trngtestbed.out_s_axi.rdata[9] top.tb_trngtestbed.out_s_axi.rdata[8] top.tb_trngtestbed.out_s_axi.rdata[7] top.tb_trngtestbed.out_s_axi.rdata[6] top.tb_trngtestbed.out_s_axi.rdata[5] top.tb_trngtestbed.out_s_axi.rdata[4] top.tb_trngtestbed.out_s_axi.rdata[3] top.tb_trngtestbed.out_s_axi.rdata[2] top.tb_trngtestbed.out_s_axi.rdata[1] top.tb_trngtestbed.out_s_axi.rdata[0]
+@28
+#{top.tb_trngtestbed.out_s_axi.rresp[1:0]} top.tb_trngtestbed.out_s_axi.rresp[1] top.tb_trngtestbed.out_s_axi.rresp[0]
+top.tb_trngtestbed.out_s_axi.rvalid
+@200
+-
+-TTB2RAM AXI
+@22
+#{top.tb_trngtestbed.out_m_axi.awaddr[31:0]} top.tb_trngtestbed.out_m_axi.awaddr[31] top.tb_trngtestbed.out_m_axi.awaddr[30] top.tb_trngtestbed.out_m_axi.awaddr[29] top.tb_trngtestbed.out_m_axi.awaddr[28] top.tb_trngtestbed.out_m_axi.awaddr[27] top.tb_trngtestbed.out_m_axi.awaddr[26] top.tb_trngtestbed.out_m_axi.awaddr[25] top.tb_trngtestbed.out_m_axi.awaddr[24] top.tb_trngtestbed.out_m_axi.awaddr[23] top.tb_trngtestbed.out_m_axi.awaddr[22] top.tb_trngtestbed.out_m_axi.awaddr[21] top.tb_trngtestbed.out_m_axi.awaddr[20] top.tb_trngtestbed.out_m_axi.awaddr[19] top.tb_trngtestbed.out_m_axi.awaddr[18] top.tb_trngtestbed.out_m_axi.awaddr[17] top.tb_trngtestbed.out_m_axi.awaddr[16] top.tb_trngtestbed.out_m_axi.awaddr[15] top.tb_trngtestbed.out_m_axi.awaddr[14] top.tb_trngtestbed.out_m_axi.awaddr[13] top.tb_trngtestbed.out_m_axi.awaddr[12] top.tb_trngtestbed.out_m_axi.awaddr[11] top.tb_trngtestbed.out_m_axi.awaddr[10] top.tb_trngtestbed.out_m_axi.awaddr[9] top.tb_trngtestbed.out_m_axi.awaddr[8] top.tb_trngtestbed.out_m_axi.awaddr[7] top.tb_trngtestbed.out_m_axi.awaddr[6] top.tb_trngtestbed.out_m_axi.awaddr[5] top.tb_trngtestbed.out_m_axi.awaddr[4] top.tb_trngtestbed.out_m_axi.awaddr[3] top.tb_trngtestbed.out_m_axi.awaddr[2] top.tb_trngtestbed.out_m_axi.awaddr[1] top.tb_trngtestbed.out_m_axi.awaddr[0]
+@28
+#{top.tb_trngtestbed.out_m_axi.awprot[2:0]} top.tb_trngtestbed.out_m_axi.awprot[2] top.tb_trngtestbed.out_m_axi.awprot[1] top.tb_trngtestbed.out_m_axi.awprot[0]
+top.tb_trngtestbed.out_m_axi.awvalid
+top.tb_trngtestbed.in_m_axi.awready
+@200
+-
+@22
+#{top.tb_trngtestbed.out_m_axi.wdata[127:0]} top.tb_trngtestbed.out_m_axi.wdata[127] top.tb_trngtestbed.out_m_axi.wdata[126] top.tb_trngtestbed.out_m_axi.wdata[125] top.tb_trngtestbed.out_m_axi.wdata[124] top.tb_trngtestbed.out_m_axi.wdata[123] top.tb_trngtestbed.out_m_axi.wdata[122] top.tb_trngtestbed.out_m_axi.wdata[121] top.tb_trngtestbed.out_m_axi.wdata[120] top.tb_trngtestbed.out_m_axi.wdata[119] top.tb_trngtestbed.out_m_axi.wdata[118] top.tb_trngtestbed.out_m_axi.wdata[117] top.tb_trngtestbed.out_m_axi.wdata[116] top.tb_trngtestbed.out_m_axi.wdata[115] top.tb_trngtestbed.out_m_axi.wdata[114] top.tb_trngtestbed.out_m_axi.wdata[113] top.tb_trngtestbed.out_m_axi.wdata[112] top.tb_trngtestbed.out_m_axi.wdata[111] top.tb_trngtestbed.out_m_axi.wdata[110] top.tb_trngtestbed.out_m_axi.wdata[109] top.tb_trngtestbed.out_m_axi.wdata[108] top.tb_trngtestbed.out_m_axi.wdata[107] top.tb_trngtestbed.out_m_axi.wdata[106] top.tb_trngtestbed.out_m_axi.wdata[105] top.tb_trngtestbed.out_m_axi.wdata[104] top.tb_trngtestbed.out_m_axi.wdata[103] top.tb_trngtestbed.out_m_axi.wdata[102] top.tb_trngtestbed.out_m_axi.wdata[101] top.tb_trngtestbed.out_m_axi.wdata[100] top.tb_trngtestbed.out_m_axi.wdata[99] top.tb_trngtestbed.out_m_axi.wdata[98] top.tb_trngtestbed.out_m_axi.wdata[97] top.tb_trngtestbed.out_m_axi.wdata[96] top.tb_trngtestbed.out_m_axi.wdata[95] top.tb_trngtestbed.out_m_axi.wdata[94] top.tb_trngtestbed.out_m_axi.wdata[93] top.tb_trngtestbed.out_m_axi.wdata[92] top.tb_trngtestbed.out_m_axi.wdata[91] top.tb_trngtestbed.out_m_axi.wdata[90] top.tb_trngtestbed.out_m_axi.wdata[89] top.tb_trngtestbed.out_m_axi.wdata[88] top.tb_trngtestbed.out_m_axi.wdata[87] top.tb_trngtestbed.out_m_axi.wdata[86] top.tb_trngtestbed.out_m_axi.wdata[85] top.tb_trngtestbed.out_m_axi.wdata[84] top.tb_trngtestbed.out_m_axi.wdata[83] top.tb_trngtestbed.out_m_axi.wdata[82] top.tb_trngtestbed.out_m_axi.wdata[81] top.tb_trngtestbed.out_m_axi.wdata[80] top.tb_trngtestbed.out_m_axi.wdata[79] top.tb_trngtestbed.out_m_axi.wdata[78] top.tb_trngtestbed.out_m_axi.wdata[77] top.tb_trngtestbed.out_m_axi.wdata[76] top.tb_trngtestbed.out_m_axi.wdata[75] top.tb_trngtestbed.out_m_axi.wdata[74] top.tb_trngtestbed.out_m_axi.wdata[73] top.tb_trngtestbed.out_m_axi.wdata[72] top.tb_trngtestbed.out_m_axi.wdata[71] top.tb_trngtestbed.out_m_axi.wdata[70] top.tb_trngtestbed.out_m_axi.wdata[69] top.tb_trngtestbed.out_m_axi.wdata[68] top.tb_trngtestbed.out_m_axi.wdata[67] top.tb_trngtestbed.out_m_axi.wdata[66] top.tb_trngtestbed.out_m_axi.wdata[65] top.tb_trngtestbed.out_m_axi.wdata[64] top.tb_trngtestbed.out_m_axi.wdata[63] top.tb_trngtestbed.out_m_axi.wdata[62] top.tb_trngtestbed.out_m_axi.wdata[61] top.tb_trngtestbed.out_m_axi.wdata[60] top.tb_trngtestbed.out_m_axi.wdata[59] top.tb_trngtestbed.out_m_axi.wdata[58] top.tb_trngtestbed.out_m_axi.wdata[57] top.tb_trngtestbed.out_m_axi.wdata[56] top.tb_trngtestbed.out_m_axi.wdata[55] top.tb_trngtestbed.out_m_axi.wdata[54] top.tb_trngtestbed.out_m_axi.wdata[53] top.tb_trngtestbed.out_m_axi.wdata[52] top.tb_trngtestbed.out_m_axi.wdata[51] top.tb_trngtestbed.out_m_axi.wdata[50] top.tb_trngtestbed.out_m_axi.wdata[49] top.tb_trngtestbed.out_m_axi.wdata[48] top.tb_trngtestbed.out_m_axi.wdata[47] top.tb_trngtestbed.out_m_axi.wdata[46] top.tb_trngtestbed.out_m_axi.wdata[45] top.tb_trngtestbed.out_m_axi.wdata[44] top.tb_trngtestbed.out_m_axi.wdata[43] top.tb_trngtestbed.out_m_axi.wdata[42] top.tb_trngtestbed.out_m_axi.wdata[41] top.tb_trngtestbed.out_m_axi.wdata[40] top.tb_trngtestbed.out_m_axi.wdata[39] top.tb_trngtestbed.out_m_axi.wdata[38] top.tb_trngtestbed.out_m_axi.wdata[37] top.tb_trngtestbed.out_m_axi.wdata[36] top.tb_trngtestbed.out_m_axi.wdata[35] top.tb_trngtestbed.out_m_axi.wdata[34] top.tb_trngtestbed.out_m_axi.wdata[33] top.tb_trngtestbed.out_m_axi.wdata[32] top.tb_trngtestbed.out_m_axi.wdata[31] top.tb_trngtestbed.out_m_axi.wdata[30] top.tb_trngtestbed.out_m_axi.wdata[29] top.tb_trngtestbed.out_m_axi.wdata[28] top.tb_trngtestbed.out_m_axi.wdata[27] top.tb_trngtestbed.out_m_axi.wdata[26] top.tb_trngtestbed.out_m_axi.wdata[25] top.tb_trngtestbed.out_m_axi.wdata[24] top.tb_trngtestbed.out_m_axi.wdata[23] top.tb_trngtestbed.out_m_axi.wdata[22] top.tb_trngtestbed.out_m_axi.wdata[21] top.tb_trngtestbed.out_m_axi.wdata[20] top.tb_trngtestbed.out_m_axi.wdata[19] top.tb_trngtestbed.out_m_axi.wdata[18] top.tb_trngtestbed.out_m_axi.wdata[17] top.tb_trngtestbed.out_m_axi.wdata[16] top.tb_trngtestbed.out_m_axi.wdata[15] top.tb_trngtestbed.out_m_axi.wdata[14] top.tb_trngtestbed.out_m_axi.wdata[13] top.tb_trngtestbed.out_m_axi.wdata[12] top.tb_trngtestbed.out_m_axi.wdata[11] top.tb_trngtestbed.out_m_axi.wdata[10] top.tb_trngtestbed.out_m_axi.wdata[9] top.tb_trngtestbed.out_m_axi.wdata[8] top.tb_trngtestbed.out_m_axi.wdata[7] top.tb_trngtestbed.out_m_axi.wdata[6] top.tb_trngtestbed.out_m_axi.wdata[5] top.tb_trngtestbed.out_m_axi.wdata[4] top.tb_trngtestbed.out_m_axi.wdata[3] top.tb_trngtestbed.out_m_axi.wdata[2] top.tb_trngtestbed.out_m_axi.wdata[1] top.tb_trngtestbed.out_m_axi.wdata[0]
+#{top.tb_trngtestbed.out_m_axi.wstrb[15:0]} top.tb_trngtestbed.out_m_axi.wstrb[15] top.tb_trngtestbed.out_m_axi.wstrb[14] top.tb_trngtestbed.out_m_axi.wstrb[13] top.tb_trngtestbed.out_m_axi.wstrb[12] top.tb_trngtestbed.out_m_axi.wstrb[11] top.tb_trngtestbed.out_m_axi.wstrb[10] top.tb_trngtestbed.out_m_axi.wstrb[9] top.tb_trngtestbed.out_m_axi.wstrb[8] top.tb_trngtestbed.out_m_axi.wstrb[7] top.tb_trngtestbed.out_m_axi.wstrb[6] top.tb_trngtestbed.out_m_axi.wstrb[5] top.tb_trngtestbed.out_m_axi.wstrb[4] top.tb_trngtestbed.out_m_axi.wstrb[3] top.tb_trngtestbed.out_m_axi.wstrb[2] top.tb_trngtestbed.out_m_axi.wstrb[1] top.tb_trngtestbed.out_m_axi.wstrb[0]
+@28
+top.tb_trngtestbed.out_m_axi.wvalid
+top.tb_trngtestbed.in_m_axi.wready
+@200
+-
+@28
+top.tb_trngtestbed.out_m_axi.bready
+#{top.tb_trngtestbed.in_m_axi.bresp[1:0]} top.tb_trngtestbed.in_m_axi.bresp[1] top.tb_trngtestbed.in_m_axi.bresp[0]
+top.tb_trngtestbed.in_m_axi.bvalid
+@200
+-
+@22
+#{top.tb_trngtestbed.out_m_axi.araddr[31:0]} top.tb_trngtestbed.out_m_axi.araddr[31] top.tb_trngtestbed.out_m_axi.araddr[30] top.tb_trngtestbed.out_m_axi.araddr[29] top.tb_trngtestbed.out_m_axi.araddr[28] top.tb_trngtestbed.out_m_axi.araddr[27] top.tb_trngtestbed.out_m_axi.araddr[26] top.tb_trngtestbed.out_m_axi.araddr[25] top.tb_trngtestbed.out_m_axi.araddr[24] top.tb_trngtestbed.out_m_axi.araddr[23] top.tb_trngtestbed.out_m_axi.araddr[22] top.tb_trngtestbed.out_m_axi.araddr[21] top.tb_trngtestbed.out_m_axi.araddr[20] top.tb_trngtestbed.out_m_axi.araddr[19] top.tb_trngtestbed.out_m_axi.araddr[18] top.tb_trngtestbed.out_m_axi.araddr[17] top.tb_trngtestbed.out_m_axi.araddr[16] top.tb_trngtestbed.out_m_axi.araddr[15] top.tb_trngtestbed.out_m_axi.araddr[14] top.tb_trngtestbed.out_m_axi.araddr[13] top.tb_trngtestbed.out_m_axi.araddr[12] top.tb_trngtestbed.out_m_axi.araddr[11] top.tb_trngtestbed.out_m_axi.araddr[10] top.tb_trngtestbed.out_m_axi.araddr[9] top.tb_trngtestbed.out_m_axi.araddr[8] top.tb_trngtestbed.out_m_axi.araddr[7] top.tb_trngtestbed.out_m_axi.araddr[6] top.tb_trngtestbed.out_m_axi.araddr[5] top.tb_trngtestbed.out_m_axi.araddr[4] top.tb_trngtestbed.out_m_axi.araddr[3] top.tb_trngtestbed.out_m_axi.araddr[2] top.tb_trngtestbed.out_m_axi.araddr[1] top.tb_trngtestbed.out_m_axi.araddr[0]
+@28
+#{top.tb_trngtestbed.out_m_axi.arprot[2:0]} top.tb_trngtestbed.out_m_axi.arprot[2] top.tb_trngtestbed.out_m_axi.arprot[1] top.tb_trngtestbed.out_m_axi.arprot[0]
+top.tb_trngtestbed.out_m_axi.arvalid
+top.tb_trngtestbed.in_m_axi.arready
+@200
+-
+@28
+top.tb_trngtestbed.out_m_axi.rready
+@22
+#{top.tb_trngtestbed.in_m_axi.rdata[127:0]} top.tb_trngtestbed.in_m_axi.rdata[127] top.tb_trngtestbed.in_m_axi.rdata[126] top.tb_trngtestbed.in_m_axi.rdata[125] top.tb_trngtestbed.in_m_axi.rdata[124] top.tb_trngtestbed.in_m_axi.rdata[123] top.tb_trngtestbed.in_m_axi.rdata[122] top.tb_trngtestbed.in_m_axi.rdata[121] top.tb_trngtestbed.in_m_axi.rdata[120] top.tb_trngtestbed.in_m_axi.rdata[119] top.tb_trngtestbed.in_m_axi.rdata[118] top.tb_trngtestbed.in_m_axi.rdata[117] top.tb_trngtestbed.in_m_axi.rdata[116] top.tb_trngtestbed.in_m_axi.rdata[115] top.tb_trngtestbed.in_m_axi.rdata[114] top.tb_trngtestbed.in_m_axi.rdata[113] top.tb_trngtestbed.in_m_axi.rdata[112] top.tb_trngtestbed.in_m_axi.rdata[111] top.tb_trngtestbed.in_m_axi.rdata[110] top.tb_trngtestbed.in_m_axi.rdata[109] top.tb_trngtestbed.in_m_axi.rdata[108] top.tb_trngtestbed.in_m_axi.rdata[107] top.tb_trngtestbed.in_m_axi.rdata[106] top.tb_trngtestbed.in_m_axi.rdata[105] top.tb_trngtestbed.in_m_axi.rdata[104] top.tb_trngtestbed.in_m_axi.rdata[103] top.tb_trngtestbed.in_m_axi.rdata[102] top.tb_trngtestbed.in_m_axi.rdata[101] top.tb_trngtestbed.in_m_axi.rdata[100] top.tb_trngtestbed.in_m_axi.rdata[99] top.tb_trngtestbed.in_m_axi.rdata[98] top.tb_trngtestbed.in_m_axi.rdata[97] top.tb_trngtestbed.in_m_axi.rdata[96] top.tb_trngtestbed.in_m_axi.rdata[95] top.tb_trngtestbed.in_m_axi.rdata[94] top.tb_trngtestbed.in_m_axi.rdata[93] top.tb_trngtestbed.in_m_axi.rdata[92] top.tb_trngtestbed.in_m_axi.rdata[91] top.tb_trngtestbed.in_m_axi.rdata[90] top.tb_trngtestbed.in_m_axi.rdata[89] top.tb_trngtestbed.in_m_axi.rdata[88] top.tb_trngtestbed.in_m_axi.rdata[87] top.tb_trngtestbed.in_m_axi.rdata[86] top.tb_trngtestbed.in_m_axi.rdata[85] top.tb_trngtestbed.in_m_axi.rdata[84] top.tb_trngtestbed.in_m_axi.rdata[83] top.tb_trngtestbed.in_m_axi.rdata[82] top.tb_trngtestbed.in_m_axi.rdata[81] top.tb_trngtestbed.in_m_axi.rdata[80] top.tb_trngtestbed.in_m_axi.rdata[79] top.tb_trngtestbed.in_m_axi.rdata[78] top.tb_trngtestbed.in_m_axi.rdata[77] top.tb_trngtestbed.in_m_axi.rdata[76] top.tb_trngtestbed.in_m_axi.rdata[75] top.tb_trngtestbed.in_m_axi.rdata[74] top.tb_trngtestbed.in_m_axi.rdata[73] top.tb_trngtestbed.in_m_axi.rdata[72] top.tb_trngtestbed.in_m_axi.rdata[71] top.tb_trngtestbed.in_m_axi.rdata[70] top.tb_trngtestbed.in_m_axi.rdata[69] top.tb_trngtestbed.in_m_axi.rdata[68] top.tb_trngtestbed.in_m_axi.rdata[67] top.tb_trngtestbed.in_m_axi.rdata[66] top.tb_trngtestbed.in_m_axi.rdata[65] top.tb_trngtestbed.in_m_axi.rdata[64] top.tb_trngtestbed.in_m_axi.rdata[63] top.tb_trngtestbed.in_m_axi.rdata[62] top.tb_trngtestbed.in_m_axi.rdata[61] top.tb_trngtestbed.in_m_axi.rdata[60] top.tb_trngtestbed.in_m_axi.rdata[59] top.tb_trngtestbed.in_m_axi.rdata[58] top.tb_trngtestbed.in_m_axi.rdata[57] top.tb_trngtestbed.in_m_axi.rdata[56] top.tb_trngtestbed.in_m_axi.rdata[55] top.tb_trngtestbed.in_m_axi.rdata[54] top.tb_trngtestbed.in_m_axi.rdata[53] top.tb_trngtestbed.in_m_axi.rdata[52] top.tb_trngtestbed.in_m_axi.rdata[51] top.tb_trngtestbed.in_m_axi.rdata[50] top.tb_trngtestbed.in_m_axi.rdata[49] top.tb_trngtestbed.in_m_axi.rdata[48] top.tb_trngtestbed.in_m_axi.rdata[47] top.tb_trngtestbed.in_m_axi.rdata[46] top.tb_trngtestbed.in_m_axi.rdata[45] top.tb_trngtestbed.in_m_axi.rdata[44] top.tb_trngtestbed.in_m_axi.rdata[43] top.tb_trngtestbed.in_m_axi.rdata[42] top.tb_trngtestbed.in_m_axi.rdata[41] top.tb_trngtestbed.in_m_axi.rdata[40] top.tb_trngtestbed.in_m_axi.rdata[39] top.tb_trngtestbed.in_m_axi.rdata[38] top.tb_trngtestbed.in_m_axi.rdata[37] top.tb_trngtestbed.in_m_axi.rdata[36] top.tb_trngtestbed.in_m_axi.rdata[35] top.tb_trngtestbed.in_m_axi.rdata[34] top.tb_trngtestbed.in_m_axi.rdata[33] top.tb_trngtestbed.in_m_axi.rdata[32] top.tb_trngtestbed.in_m_axi.rdata[31] top.tb_trngtestbed.in_m_axi.rdata[30] top.tb_trngtestbed.in_m_axi.rdata[29] top.tb_trngtestbed.in_m_axi.rdata[28] top.tb_trngtestbed.in_m_axi.rdata[27] top.tb_trngtestbed.in_m_axi.rdata[26] top.tb_trngtestbed.in_m_axi.rdata[25] top.tb_trngtestbed.in_m_axi.rdata[24] top.tb_trngtestbed.in_m_axi.rdata[23] top.tb_trngtestbed.in_m_axi.rdata[22] top.tb_trngtestbed.in_m_axi.rdata[21] top.tb_trngtestbed.in_m_axi.rdata[20] top.tb_trngtestbed.in_m_axi.rdata[19] top.tb_trngtestbed.in_m_axi.rdata[18] top.tb_trngtestbed.in_m_axi.rdata[17] top.tb_trngtestbed.in_m_axi.rdata[16] top.tb_trngtestbed.in_m_axi.rdata[15] top.tb_trngtestbed.in_m_axi.rdata[14] top.tb_trngtestbed.in_m_axi.rdata[13] top.tb_trngtestbed.in_m_axi.rdata[12] top.tb_trngtestbed.in_m_axi.rdata[11] top.tb_trngtestbed.in_m_axi.rdata[10] top.tb_trngtestbed.in_m_axi.rdata[9] top.tb_trngtestbed.in_m_axi.rdata[8] top.tb_trngtestbed.in_m_axi.rdata[7] top.tb_trngtestbed.in_m_axi.rdata[6] top.tb_trngtestbed.in_m_axi.rdata[5] top.tb_trngtestbed.in_m_axi.rdata[4] top.tb_trngtestbed.in_m_axi.rdata[3] top.tb_trngtestbed.in_m_axi.rdata[2] top.tb_trngtestbed.in_m_axi.rdata[1] top.tb_trngtestbed.in_m_axi.rdata[0]
+@28
+#{top.tb_trngtestbed.in_m_axi.rresp[1:0]} top.tb_trngtestbed.in_m_axi.rresp[1] top.tb_trngtestbed.in_m_axi.rresp[0]
+top.tb_trngtestbed.in_m_axi.rvalid
+[pattern_trace] 1
+[pattern_trace] 0

@@ -1,9 +1,14 @@
 -----------------------------------------------------------------------------------------------------------------------
 -- entity: TrngGenerator
--- description: Core generative file that instantiates all supported types of entropy sources. Uses VHDL-2008 
---              techniques, and as such often requires a wrapper file for instantiation in Vivado block diagrams.
---              Provides an address interface to select which entropy source is being output on the o_rng_* busses,
---              and provides DRP access to the sampling clock PLL.
+--
+-- library: ostrngs
+--
+-- description:
+--       Core generative file that instantiates all supported types of entropy sources. Uses VHDL-2008 
+--       techniques, and as such often requires a wrapper file for instantiation in Vivado block diagrams.
+--       Provides an address interface to select which entropy source is being output on the o_rng_* busses,
+--       and provides DRP access to the sampling clock PLL on the [io]_pll* busses.
+--
 -----------------------------------------------------------------------------------------------------------------------
 
 library ieee;
