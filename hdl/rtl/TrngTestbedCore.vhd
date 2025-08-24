@@ -44,6 +44,9 @@ entity TrngTestbedCore is
         -- active low reset synchronous to the system clock
         i_resetn : in std_logic;
 
+        -- interrupt signalling end of data collection, set high for 5 cc
+        o_ttb_intr : out std_logic;
+
         ----------------------------------------------------------------------
         -- Processor-To-TrngTestbed AXI Lite Interface
         ----------------------------------------------------------------------
@@ -194,6 +197,8 @@ architecture rtl of TrngTestbedCore is
     signal axi_wready  : std_logic := '0';
     signal axi_awaddr  : unsigned(31 downto 0) := (others => '0');
     signal pll_locked  : std_logic := '0';
+
+    signal ttb_intr : std_logic := '0';
 begin
     
     eSandbox : entity ostrngs.TrngSandbox
@@ -431,6 +436,9 @@ begin
                         end if;
                 end case;
 
+                -- Clear the interrupt signal.
+                ttb_intr <= '0';
+
                 case state is
                     when IDLE =>
                         fifo_pop_reg <= '0';
@@ -485,6 +493,7 @@ begin
                             else
                                 status.mode  <= x"00";
                                 state        <= IDLE;
+                                ttb_intr     <= '1';
                             end if;
                         end if;
                 end case;
@@ -493,5 +502,24 @@ begin
             end if;
         end if;
     end process StateMachine;
+
+    InterruptPulseExtender: process(i_clk)
+        variable count : natural range 0 to 5 := 0;
+    begin
+        if rising_edge(i_clk) then
+            if (i_resetn = '0') then
+                o_ttb_intr <= '0';
+            else
+                if (ttb_intr = '1') then
+                    o_ttb_intr <= '1';
+                    count := 5;
+                elsif (count > 0) then
+                    count := count - 1;
+                else
+                    o_ttb_intr <= '0';
+                end if;
+            end if;
+        end if;
+    end process InterruptPulseExtender;
     
 end architecture rtl;
