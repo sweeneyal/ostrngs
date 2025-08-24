@@ -1,4 +1,18 @@
 -----------------------------------------------------------------------------------------------------------------------
+-- entity: TrngStorage
+--
+-- library: ostrngs
+--
+-- description:
+--       FIFO is a Dual clock FIFO with an initial component registering the outputs of the entropy sources into a 
+--       storage register between the FIFO and the entropy source. This will allow somewhat arbitrary widths of 
+--       consecutive samples to be logged into the FIFO, sort of reducing the throughput requirement.
+--
+--       The initial application of this is to generate a depth of samples, then dump the samples out over the 
+--       external fifo interface to either a processor or other interface with a host PC. The expected end application
+--       however is to use the FIFO to buffer samples going to external DDR memory and then use a processor or other 
+--       interface to read out the DDR memory, thereby leveraging the FIFO as a form of DMA.
+--
 -----------------------------------------------------------------------------------------------------------------------
 
 library ieee;

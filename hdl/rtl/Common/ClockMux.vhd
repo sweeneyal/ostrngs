@@ -1,4 +1,12 @@
 -----------------------------------------------------------------------------------------------------------------------
+-- entity: ClockMux
+--
+-- library: ostrngs
+--
+-- description:
+--       AMD-Xilinx recommended cascaded clock multiplexor structure. Allows selection from a number of clocks,
+--       but uses i_clks(0) as o_clk if i_sel = x"00".
+--
 -----------------------------------------------------------------------------------------------------------------------
 
 library ieee;
