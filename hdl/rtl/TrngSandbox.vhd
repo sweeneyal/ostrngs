@@ -4,7 +4,14 @@
 -- library: ostrngs
 --
 -- description:
---       
+--       The TrngSandbox brings together the fundamental components of the TrngTestbed, but instead of providing
+--       control and status registers via AXI, the Sandbox maintains the fundamental plumbing contained within. The 
+--       direct access to the entropy sources is provided on [io]_rng_* busses, direct access to the sampling FIFO
+--       is provided on the [io]_fifo_* busses, and direct access to the PLL is provided on the [io]_pll_* busses.
+--
+--       This file allows for use of the fundamental plumbing and structure of TrngTestbed in a non-AXI context,
+--       or as part of a larger IP core integrated with other security primitives and algorithms, or any other
+--       application where the AXI ports are undesired.
 --
 -----------------------------------------------------------------------------------------------------------------------
 
