@@ -132,9 +132,13 @@ end entity AxiCrossbar;
 architecture rtl of AxiCrossbar is
     -- Grant status indicates that the master M is connected to the peripheral P if grant[M][P] = '1'
     type grant_status_t is array (0 to cNumMasters - 1) of std_logic_vector(cNumPeripherals - 1 downto 0);
-    signal grant  : grant_status_t := (others => (others => '0'));
+    signal wgrant  : grant_status_t := (others => (others => '0'));
+    signal rgrant  : grant_status_t := (others => (others => '0'));
     -- MGrant indicates that the master M is connected to any peripheral if mgrant[M] = '1'
-    signal mgrant : std_logic_vector(cNumMasters - 1 downto 0) := (others => '0');
+    signal mwgrant : std_logic_vector(cNumMasters - 1 downto 0) := (others => '0');
+    signal mrgrant : std_logic_vector(cNumMasters - 1 downto 0) := (others => '0');
+
+
 begin
     
     

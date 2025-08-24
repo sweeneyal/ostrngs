@@ -193,6 +193,8 @@ begin
         i_clk    => clk,
         i_resetn => resetn,
 
+        o_ttb_intr => open,
+
         s_axi_trng_awaddr  => in_s_axi.awaddr,
         s_axi_trng_awprot  => in_s_axi.awprot,
         s_axi_trng_awvalid => in_s_axi.awvalid,

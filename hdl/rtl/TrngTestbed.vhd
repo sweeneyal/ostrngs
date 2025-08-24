@@ -50,6 +50,9 @@ entity TrngTestbed is
         -- active low reset synchronous to the system clock
         i_resetn : in std_logic;
 
+        -- interrupt signalling end of data collection, set high for 5 cc
+        o_ttb_intr : out std_logic;
+
         ----------------------------------------------------------------------
         -- Processor-To-TrngTestbed AXI Lite Interface
         ----------------------------------------------------------------------
