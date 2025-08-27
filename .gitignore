@@ -14,3 +14,7 @@ scratch
 .vscode
 
 vunit_out
+
+*.str
+*.jou
+*.log
