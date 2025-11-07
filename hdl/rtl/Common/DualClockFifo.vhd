@@ -43,10 +43,8 @@ architecture rtl of DualClockFifo is
     function bin2gray(b : std_logic_vector) return std_logic_vector is
         variable g : std_logic_vector(b'range);
     begin
-        g(b'length - 1) := b(b'length - 1);
-        for ii in b'length-2 downto 0 loop
-            g(ii) := b(ii) xor b(ii + 1);
-        end loop;
+        g := b;
+        g := g xor std_logic_vector(shift_right(unsigned(g), 1));
         return g;
     end function;
 
@@ -200,7 +198,7 @@ begin
     end process RptrCtrl;
 
     rptr_s <= std_logic_vector(rptr);
-    rptr_g <= bin2gray(rptr_g);
+    rptr_g <= bin2gray(rptr_s);
 
     ASideRptrConversion: process(i_clka)
     begin
