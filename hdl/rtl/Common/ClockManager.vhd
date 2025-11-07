@@ -80,7 +80,7 @@ begin
         -- REF_JITTER: Reference input jitter in UI (0.000-0.999).
         REF_JITTER1  => 0.0,
         REF_JITTER2  => 0.0,
-        STARTUP_WAIT => "FALSE"    -- Delay DONE until PLL Locks, ("TRUE"/"FALSE")
+        STARTUP_WAIT => "TRUE"    -- Delay DONE until PLL Locks, ("TRUE"/"FALSE")
     )
     port map (
         -- Clock Outputs: 1-bit (each) output: User configurable clock outputs

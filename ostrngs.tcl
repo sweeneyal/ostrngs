@@ -50,10 +50,14 @@ optproc ::ostrngs::import_sources {{mode "project"}} {
             $ostrngs::home/hdl/rtl/MeshCoupledXor/CxUnit.vhd
             $ostrngs::home/hdl/rtl/MeshCoupledXor/MeshCoupledXor.vhd
         "
-        import_files $files
+        add_files $files
 
         foreach file $files {
             set_property library ostrngs [get_files [file tail $file]]
         }
+
+        set_property file_type {VHDL 2008} [get_files AxiCrossbar.vhd]
+
+        set_property file_type {VHDL 2008} [get_files TrngGenerator.vhd]
     }
 }

@@ -53,6 +53,18 @@ architecture rtl of MeshCoupledXor is
     signal gh1 : std_logic := '0';
     signal fg1 : std_logic := '0';
     signal fg2 : std_logic := '0';
+
+    attribute ALLOW_COMBINATORIAL_LOOPS : string;
+    attribute ALLOW_COMBINATORIAL_LOOPS of ro     : signal is "true";
+    attribute ALLOW_COMBINATORIAL_LOOPS of out_cx : signal is "true";
+    attribute ALLOW_COMBINATORIAL_LOOPS of in_cx  : signal is "true";
+    attribute ALLOW_COMBINATORIAL_LOOPS of xor_cx : signal is "true";
+
+    attribute DONT_TOUCH : string;
+    attribute DONT_TOUCH of ro     : signal is "true";
+    attribute DONT_TOUCH of out_cx : signal is "true";
+    attribute DONT_TOUCH of in_cx  : signal is "true";
+    attribute DONT_TOUCH of xor_cx : signal is "true";
 begin
     
     o_taps <= out_cx;

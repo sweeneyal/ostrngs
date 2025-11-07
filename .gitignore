@@ -18,3 +18,5 @@ vunit_out
 *.str
 *.jou
 *.log
+
+.Xil

@@ -50,9 +50,9 @@ begin
                 o_rdataa <= ram(to_integer(unsigned(i_addra)));
                 if (i_wena = '1') then
                     ram(to_integer(unsigned(i_addra))) := i_wdataa;
-                    if (cVerboseMode) then
-                        report "RAM_" & cRamID & "[" & to_hstring(i_addra) & "]=" & to_hstring(i_wdataa);
-                    end if;
+                    -- if (cVerboseMode) then
+                    --     report "RAM_" & cRamID & "[" & to_hstring(i_addra) & "]=" & to_hstring(i_wdataa);
+                    -- end if;
                 end if;
             end if;
         end if;
@@ -65,9 +65,9 @@ begin
                 o_rdatab <= ram(to_integer(unsigned(i_addrb)));
                 if (i_wenb = '1') then
                     ram(to_integer(unsigned(i_addrb))) := i_wdatab;
-                    if (cVerboseMode) then
-                        report "RAM_" & cRamID & "[" & to_hstring(i_addra) & "]=" & to_hstring(i_wdataa);
-                    end if;
+                    -- if (cVerboseMode) then
+                    --     report "RAM_" & cRamID & "[" & to_hstring(i_addra) & "]=" & to_hstring(i_wdataa);
+                    -- end if;
                 end if;
             end if;
         end if;
