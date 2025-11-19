@@ -1,4 +1,4 @@
-import nist.estimators as nist
+import estimators as nist
 
 import time
 
