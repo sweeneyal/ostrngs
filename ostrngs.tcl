@@ -31,24 +31,28 @@ optproc ::ostrngs::import_sources {{mode "project"}} {
     # If we're running in project mode:
     if { $mode eq "project" } {
         set files "
-            $ostrngs::home/hdl/rtl/TrngSandbox.vhd
             $ostrngs::home/hdl/rtl/Common/AxiCrossbar.vhd
-            $ostrngs::home/hdl/rtl/Common/DualClockFifo.vhd
-            $ostrngs::home/hdl/rtl/Common/ClockMux.vhd
             $ostrngs::home/hdl/rtl/Common/AxiUtility.vhd
-            $ostrngs::home/hdl/rtl/Common/DualClockBram.vhd
             $ostrngs::home/hdl/rtl/Common/ClockManager.vhd
+            $ostrngs::home/hdl/rtl/Common/ClockMux.vhd
+            $ostrngs::home/hdl/rtl/Common/DualClockBram.vhd
+            $ostrngs::home/hdl/rtl/Common/DualClockFifo.vhd
+            $ostrngs::home/hdl/rtl/Common/UartRx.vhd
+            $ostrngs::home/hdl/rtl/Common/UartTx.vhd
+            $ostrngs::home/hdl/rtl/Core/TrngControllerCore.vhd
+            $ostrngs::home/hdl/rtl/Core/TrngGenerator.vhd
+            $ostrngs::home/hdl/rtl/Core/TrngSandbox.vhd
+            $ostrngs::home/hdl/rtl/Core/TrngStorage.vhd
+            $ostrngs::home/hdl/rtl/Core/TrngTestbedCore.vhd
+            $ostrngs::home/hdl/rtl/MeshCoupledXor/CxUnit.vhd
+            $ostrngs::home/hdl/rtl/MeshCoupledXor/MeshCoupledXor.vhd
             $ostrngs::home/hdl/rtl/OpenLoopMetaTrng/CoarseCascade.vhd
             $ostrngs::home/hdl/rtl/OpenLoopMetaTrng/OpenLoopMetaTrng.vhd
-            $ostrngs::home/hdl/rtl/TrngTestbedCore.vhd
             $ostrngs::home/hdl/rtl/StrTrng/StrTrng.vhd
             $ostrngs::home/hdl/rtl/StrTrng/MullerC.vhd
             $ostrngs::home/hdl/rtl/StrTrng/SelfTimedRing.vhd
+            $ostrngs::home/hdl/rtl/TrngController.vhd
             $ostrngs::home/hdl/rtl/TrngTestbed.vhd
-            $ostrngs::home/hdl/rtl/TrngGenerator.vhd
-            $ostrngs::home/hdl/rtl/TrngStorage.vhd
-            $ostrngs::home/hdl/rtl/MeshCoupledXor/CxUnit.vhd
-            $ostrngs::home/hdl/rtl/MeshCoupledXor/MeshCoupledXor.vhd
         "
         add_files $files
 
@@ -57,7 +61,6 @@ optproc ::ostrngs::import_sources {{mode "project"}} {
         }
 
         set_property file_type {VHDL 2008} [get_files AxiCrossbar.vhd]
-
         set_property file_type {VHDL 2008} [get_files TrngGenerator.vhd]
     }
 }
