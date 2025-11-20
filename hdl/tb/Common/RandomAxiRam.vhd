@@ -108,6 +108,8 @@ architecture rtl of RandomAxiRam is
                     address=>i_addr(cAddressWidth_b - 1 downto cCachelineIndexWidth_b), 
                     data=>trdata, 
                     ptr=>null);
+
+            o_rdata <= memptr.data;
         else
             -- We're iterating the linked list until we find either the address we're looking for
             -- or the end of the list.

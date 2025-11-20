@@ -293,6 +293,8 @@ begin
                         if (i_s_axi_wvalid = '1') then
                             o_s_axi_wready <= '0';
 
+                            -- We don't handle any wstrb here...
+
                             o_s_axi_bvalid <= '1';
                             axi_state      <= WRITE_RESPONSE;
                             case (addr) is

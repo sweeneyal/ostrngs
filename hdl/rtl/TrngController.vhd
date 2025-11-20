@@ -17,7 +17,7 @@ entity TrngController is
 
         -- uart interface
         o_uart_tx : out std_logic;
-        i_uart_rx : out std_logic;
+        i_uart_rx : in std_logic;
 
         ----------------------------------------------------------------------
         -- Master AXI Lite Interface
