@@ -50,6 +50,7 @@ begin
                 when IDLE =>
                     bitIndex := 0;
                     bitTimer := 0;
+                    rxDataReg <= (others => '0');
                     if (rxd = '0') then
                         state    <= READ_DATA;
                         -- Set the timer to halfway
@@ -60,7 +61,7 @@ begin
                     if (bitTimer > 0) then
                         bitTimer := bitTimer - 1;
                     else
-                        bitTimer := cClocksPerBit;
+                        bitTimer := cClocksPerBit - 1;
                         rxDataReg(bitIndex) <= rxd;
 
                         if (bitIndex = 0 and rxd = '1') then

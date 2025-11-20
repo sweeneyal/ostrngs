@@ -17,7 +17,7 @@ entity TrngControllerCore is
 
         -- uart interface
         o_uart_tx : out std_logic;
-        i_uart_rx : out std_logic;
+        i_uart_rx : in  std_logic;
 
         ----------------------------------------------------------------------
         -- Master AXI Lite Interface
@@ -68,7 +68,7 @@ entity TrngControllerCore is
 end entity TrngControllerCore;
 
 architecture rtl of TrngControllerCore is
-    constant cPacketSize_B : natural := 10;
+    constant cPacketSize_B : natural := 11;
     constant cWordSize_B   : natural := 4;
     constant cGetHeader    : std_logic_vector(7 downto 0) := x"0A";
     constant cSetHeader    : std_logic_vector(7 downto 0) := x"A0";
@@ -82,7 +82,7 @@ architecture rtl of TrngControllerCore is
     signal idx      : natural := 0;
     signal sum      : unsigned(7 downto 0) := (others => '0');
     signal busy     : std_logic := '0';
-    signal packet   : std_logic_vector(79 downto 0) := (others => '0');
+    signal packet   : std_logic_vector(87 downto 0) := (others => '0');
     signal bresp    : std_logic_vector(1 downto 0) := (others => '0');
 
     signal m_axi_awvalid : std_logic := '0';
@@ -94,6 +94,7 @@ architecture rtl of TrngControllerCore is
     signal header  : std_logic_vector(7 downto 0)  := (others => '0');
     signal address : std_logic_vector(31 downto 0) := (others => '0');
     signal data    : std_logic_vector(31 downto 0) := (others => '0');
+    signal wstrb   : std_logic_vector(3 downto 0)  := (others => '0');
     signal crc     : std_logic_vector(7 downto 0)  := (others => '0');
     signal rdata   : std_logic_vector(31 downto 0) := (others => '0');
 
@@ -115,6 +116,12 @@ begin
         o_byte  => rx_data,
         o_valid => rx_valid
     );
+
+    o_m_axi_awvalid <= m_axi_awvalid;
+    o_m_axi_wvalid  <= m_axi_wvalid;
+    o_m_axi_bready  <= m_axi_bready;
+    o_m_axi_arvalid <= m_axi_arvalid;
+    o_m_axi_rready  <= m_axi_rready;
 
     StateMachine: process(i_clk)
         variable seq : std_logic_vector(2 downto 0) := "000";
@@ -153,7 +160,10 @@ begin
                         if (rx_valid = '1') then
                             packet(8 * idx + 7 downto 8 * idx) <= rx_data;
                             idx <= idx + 1;
-                            sum <= sum + unsigned(rx_data);
+                            -- Specifically skip the last byte, since it's the crc byte
+                            if (idx < cPacketSize_B - 1) then
+                                sum <= sum + unsigned(rx_data);
+                            end if;
                             if (idx = cPacketSize_B - 1) then
                                 state <= PARSE_PACKET;
                             end if;
@@ -164,7 +174,8 @@ begin
                         header  <= packet(7 downto 0);
                         address <= packet(39 downto 8);
                         data    <= packet(71 downto 40);
-                        crc     <= packet(79 downto 72);
+                        wstrb   <= packet(75 downto 72);
+                        crc     <= packet(87 downto 80);
                         state   <= ACK_VALID;
                     
                     when ACK_VALID =>
@@ -207,6 +218,8 @@ begin
                             seq   := "000";
                             state <= SEND_DATA;
                             sum   <= (others => '0');
+
+                            idx   <= 0;
                         end if;
 
                     when SEND_DATA =>
@@ -219,12 +232,14 @@ begin
 
                     when STALL =>
                         tx_valid <= '0';
-                        if (idx < cWordSize_B - 1) then
-                            idx   <= idx + 1;
-                            state <= SEND_DATA;
-                        else
-                            state <= SEND_CRC;
-                            idx   <= 0;
+                        if (tx_ready = '0') then
+                            if (idx < cWordSize_B - 1) then
+                                idx   <= idx + 1;
+                                state <= SEND_DATA;
+                            else
+                                state <= SEND_CRC;
+                                idx   <= 0;
+                            end if;
                         end if;
 
                     when SEND_CRC =>
@@ -235,15 +250,16 @@ begin
                         end if;
 
                     when SET_ADDRESS =>
-                        o_m_axi_awaddr  <= address;
-                        m_axi_awvalid <= '1';
+                        o_m_axi_awaddr <= address;
+                        m_axi_awvalid  <= '1';
                         if (seq(0) = '1' or (m_axi_awvalid and i_m_axi_awready) = '1') then
                             seq(0) := '1';
                             m_axi_awvalid <= '0';
                         end if;
 
                         o_m_axi_wdata <= data;
-                        m_axi_wvalid <= '1';
+                        o_m_axi_wstrb <= wstrb;
+                        m_axi_wvalid  <= '1';
                         if (seq(1) = '1' or (m_axi_wvalid and i_m_axi_wready) = '1') then
                             seq(1) := '1';
                             m_axi_wvalid <= '0';
