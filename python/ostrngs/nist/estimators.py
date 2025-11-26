@@ -660,9 +660,9 @@ def L7Z8YEstimate(dataset, domain, demo=False):
 
 suite = [
     MostCommonValueEstimate, 
-    CollisionEstimate, 
-    MarkovEstimate, 
-    FastCompressionEstimate, 
+    # CollisionEstimate, 
+    # MarkovEstimate, 
+    # FastCompressionEstimate, 
     FastTTupleEstimate,
     #LongestRepeatedSubstringEstimate,
     MultiMCWEstimate,

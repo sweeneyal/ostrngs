@@ -169,6 +169,8 @@ architecture rtl of TrngTestbedCore is
         --   0 is FIFO readout mode
         --   1 is DDR DMA mode
         mode  : std_logic_vector(7 downto 0);
+        -- Enable is the colocated RNG enable, which allows RNGs to run.
+        enable : std_logic_vector(7 downto 0);
         -- Total is the number of samples desired for Mode 1 to collect
         total : unsigned(23 downto 0);
         -- Count is the number of samples collected during Mode 1 thus far
@@ -182,7 +184,10 @@ architecture rtl of TrngTestbedCore is
     end record status_t;
 
     signal status : status_t := status_t'(
-        mode     => (others => '0'),
+        -- Mode and enable are colocated in order to have them 
+        -- update simultaneously.
+        mode     => (others => '0'), 
+        enable   => (others => '0'),
         total    => (others => '0'),
         count    => (others => '0'),
         rng_addr => (others => '0'),
@@ -199,6 +204,13 @@ architecture rtl of TrngTestbedCore is
     signal pll_locked  : std_logic := '0';
 
     signal ttb_intr : std_logic := '0';
+
+    signal resetn : std_logic := '0';
+
+    -- We need the ability to clear the FIFO anytime mode gets written.
+    -- This allows us to safely remove other results from clogging the 
+    -- FIFO.
+    signal fifo_clear : std_logic := '0';
 begin
     
     eSandbox : entity ostrngs.TrngSandbox
@@ -220,10 +232,12 @@ begin
         i_resetn => i_resetn,
 
         i_rng_addr   => status.rng_addr,
+        i_rng_enable => status.enable,
         o_rng_clk    => open,
         o_rng_data   => rng_data,
         o_rng_dvalid => rng_dvalid,
 
+        i_fifo_clear  => fifo_clear,
         i_fifo_pop    => fifo_pop,
         o_fifo_data   => fifo_data,
         o_fifo_dvalid => fifo_dvalid,
@@ -262,6 +276,7 @@ begin
     end process PllAccessSignals;
 
     StateMachine: process(i_clk)
+        variable seq : std_logic_vector(2 downto 0) := (others => '0');
     begin
         if rising_edge(i_clk) then
             if (i_resetn = '0') then
@@ -272,7 +287,14 @@ begin
                 o_s_axi_bvalid  <= '0';
                 o_s_axi_arready <= '0';
                 o_s_axi_rvalid  <= '0';
+
+                resetn <= '0';
+                seq := (others => '0');
             else
+                -- Default the fifo clear signal to '0' so we only clear it
+                -- when the RNG or the MODE changes.
+                fifo_clear <= '0';
+
                 case axi_state is
                     when IDLE =>                        
                         if (i_s_axi_awvalid = '1') then
@@ -308,7 +330,12 @@ begin
                                 when "1000000100" =>
                                     -- OKAY RESPONSE
                                     status.mode   <= i_s_axi_wdata(7 downto 0);
+                                    status.enable <= i_s_axi_wdata(15 downto 8);
                                     o_s_axi_bresp <= "00";
+
+                                    -- Clear the FIFO since we might have changed mode or enable.
+                                    fifo_clear <= '1';
+
                                 when "1000001000" =>
                                     -- OKAY RESPONSE
                                     status.total  <= unsigned(i_s_axi_wdata(23 downto 0));
@@ -320,6 +347,10 @@ begin
                                     -- OKAY RESPONSE
                                     status.rng_addr <= i_s_axi_wdata(7 downto 0);
                                     o_s_axi_bresp   <= "00";
+
+                                    -- Clear the FIFO since we might have changed selected RNG.
+                                    fifo_clear <= '1';
+
                                 when "1000010100" =>
                                     -- OKAY RESPONSE
                                     status.mem_addr <= i_s_axi_wdata;
@@ -366,7 +397,7 @@ begin
                                 o_s_axi_rvalid <= '1';
                                 -- OKAY RESPONSE
                                 o_s_axi_rresp  <= "00";
-                                o_s_axi_rdata  <= x"000000" & status.mode;
+                                o_s_axi_rdata  <= x"0000" & status.enable & status.mode;
 
                                 axi_state <= READ_RESPONSE;
 
@@ -460,38 +491,42 @@ begin
 
                     when POP_FIFO =>
                         fifo_pop_reg <= '0';
+                        seq := (others => '0');
                         if (fifo_dvalid = '1') then
                             o_m_axi_awaddr  <= std_logic_vector(axi_awaddr);
                             o_m_axi_awvalid <= '1';
                             o_m_axi_wdata   <= fifo_data;
                             o_m_axi_wstrb   <= (others => '1');
                             o_m_axi_wvalid  <= '1';
+                            o_m_axi_bready  <= '1';
 
                             state        <= SENDING;
                             axi_awaddr   <= axi_awaddr + cFifoWidth * cDataWidth_B;
+                        elsif (fifo_aempty = '1' or fifo_empty = '1') then
+                            state <= COLLECTING;
                         end if;
-                        o_m_axi_bready <= '1';
                     
                     when SENDING =>
                         if (i_m_axi_awready = '1') then
-                            axi_awready   <= '1';
+                            seq(0) := '1';
                             o_m_axi_awvalid <= '0';
                         end if;
 
                         if (i_m_axi_wready = '1') then
-                            axi_wready   <= '1';
+                            seq(1) := '1';
                             o_m_axi_wvalid <= '0';
                         end if;
 
-                        if (((i_m_axi_awready or axi_awready) and (i_m_axi_wready or axi_wready)) = '1') then
+                        if (i_m_axi_bvalid = '1') then
+                            seq(2) := '1';
+                            o_m_axi_bready <= '0';
+                        end if;
+
+                        if (seq = "111") then
+                            seq := (others => '0');
                             if status.count < status.total then
                                 status.count <= status.count + cFifoWidth;
                                 state        <= COLLECTING;
-
-                                axi_awready   <= '0';
-                                axi_wready    <= '0';
-                                o_m_axi_wvalid  <= '0';
-                                o_m_axi_awvalid <= '0';
                             else
                                 status.mode  <= x"00";
                                 state        <= IDLE;
