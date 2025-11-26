@@ -42,6 +42,8 @@ entity TrngGenerator is
 
         -- entropy source selection
         i_rng_addr   : in std_logic_vector(7 downto 0);
+        -- entropy source enable signals
+        i_rng_enable : in std_logic_vector(7 downto 0);
         -- entropy source sample clock
         o_rng_clk    : out std_logic;
         -- entropy sample output 
@@ -139,31 +141,33 @@ begin
     o_rng_data   <= rng(to_integer(unsigned(i_rng_addr)));
     o_rng_dvalid <= rng_dvalid(to_integer(unsigned(i_rng_addr)));
 
-    RngResetnPulseExtender: process(i_clk, i_resetn)
-        variable timer : natural range 0 to 2 := 2;
-    begin
-        if (i_resetn = '0') then
-            rng_resetn <= '0';
-            timer := 2;
-        elsif rising_edge(i_clk) then
-            if (timer = 0) then
-                rng_resetn <= '1';
-            else
-                timer := timer - 1;
-            end if;
-        end if;
-    end process RngResetnPulseExtender;
-
     gEntropySourceInstantiation: for g_ii in 0 to cNumEntropySources - 1 generate
         gMeshCoupledXor: if (cEntropySources(g_ii) = padded("MeshCoupledXor", 256)) generate
             signal local_rng : std_logic_vector(5 downto 0) := (others => '0');
+            signal local_resetn : std_logic;
         begin
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
 
             eMeshCoupledXor : entity ostrngs.MeshCoupledXor
             port map (
                 i_clk    => rng_clk,
-                i_resetn => rng_resetn,
-                o_rng    => local_rng
+                i_resetn => local_resetn,
+                o_rng    => local_rng,
+                o_valid  => rng_dvalid(g_ii)
             );
 
             -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
@@ -172,13 +176,27 @@ begin
             -- Resize the random sample to fit into the o_rng_data bus.
             rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
 
-            -- This entropy source generates a new random sample every clock cycle it is active.
-            rng_dvalid(g_ii) <= rng_resetn;
         end generate gMeshCoupledXor;
 
         gOpenLoopMetaTrng: if (cEntropySources(g_ii) = padded("OpenLoopMetaTrng", 256)) generate
             signal local_rng : std_logic_vector(0 downto 0) := "0";
+            signal local_resetn : std_logic;
         begin
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
 
             eOpenLoopMeta : entity ostrngs.OpenLoopMetaTrng
             port map (
@@ -194,12 +212,28 @@ begin
             rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
 
             -- This entropy source generates a new random sample every clock cycle it is active.
-            rng_dvalid(g_ii) <= rng_resetn;
+            rng_dvalid(g_ii) <= local_resetn;
         end generate gOpenLoopMetaTrng;
 
         gStrTrng: if (cEntropySources(g_ii) = padded("StrTrng", 256)) generate
             signal local_rng : std_logic_vector(0 downto 0) := "0";
+            signal local_resetn : std_logic;
         begin
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
         
             eStrTrng : entity ostrngs.StrTrng
             port map (
@@ -215,7 +249,7 @@ begin
             rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
 
             -- This entropy source generates a new random sample every clock cycle it is active.
-            rng_dvalid(g_ii) <= rng_resetn;
+            rng_dvalid(g_ii) <= local_resetn;
         end generate gStrTrng;
 
         gNonSynth: if (cEntropySources(g_ii) = padded("Simulation", 256)) generate
@@ -241,7 +275,7 @@ begin
                     rng(g_ii) <= rand_slv(8 * cDataWidth_B);
                     -- 
                     -- This entropy source generates a new random sample every clock cycle it is active.
-                    rng_dvalid(g_ii) <= rng_resetn;
+                    rng_dvalid(g_ii) <= rng_resetn and i_rng_enable(g_ii);
                 end if;
             end process SimulatedEntropySource;
 

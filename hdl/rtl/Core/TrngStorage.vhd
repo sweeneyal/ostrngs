@@ -43,6 +43,8 @@ entity TrngStorage is
         
         -- external fifo measurement clock
         i_fifo_clk    : in std_logic;
+        -- external fifo clear signal
+        i_fifo_clear  : in std_logic;
         -- external fifo pop signal 
         i_fifo_pop    : in std_logic;
         -- external fifo output data bus
@@ -64,6 +66,8 @@ end entity TrngStorage;
 architecture rtl of TrngStorage is
     signal rng_data   : std_logic_vector(8 * cDataWidth_B * cFifoWidth - 1 downto 0) := (others => '0');
     signal rng_dvalid : std_logic := '0';
+
+    signal aresetn : std_logic := '0';
 begin
     
     SampleAggregator: process(i_rng_clk)
@@ -86,14 +90,16 @@ begin
         end if;
     end process SampleAggregator;
 
+    aresetn <= i_resetn and not i_fifo_clear;
+
     eFifo : entity ostrngs.DualClockFifo
     generic map (
         cDepth       => cFifoDepth,
         cDataWidth_b => cFifoWidth * cDataWidth_B * 8
     ) port map (
-        i_clka   => i_rng_clk,
-        i_clkb   => i_fifo_clk,
-        i_resetn => '1',
+        i_clka    => i_rng_clk,
+        i_clkb    => i_fifo_clk,
+        i_aresetn => aresetn,
 
         i_data_a  => rng_data,
         i_valid_a => rng_dvalid,

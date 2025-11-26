@@ -21,9 +21,9 @@ entity DualClockFifo is
         cDataWidth_b  : natural := 8
     );
     port (
-        i_clka   : in std_logic;
-        i_clkb   : in std_logic;
-        i_resetn : in std_logic;
+        i_clka    : in std_logic;
+        i_clkb    : in std_logic;
+        i_aresetn : in std_logic;
 
         i_data_a  : in std_logic_vector(cDataWidth_b - 1 downto 0);
         i_valid_a : in std_logic;
@@ -75,7 +75,7 @@ architecture rtl of DualClockFifo is
     signal wptr_b : unsigned(cAddressWidth_b - 1 downto 0) := (others => '0');
     signal rptr_a : unsigned(cAddressWidth_b - 1 downto 0) := (others => '0');
 
-    signal fifo_empty  : std_logic := '0';
+    signal fifo_empty  : std_logic := '1';
     signal fifo_aempty : std_logic := '0';
     signal fifo_afull  : std_logic := '0';
     signal fifo_full   : std_logic := '0';
@@ -113,13 +113,11 @@ begin
 
     WptrCtrl: process(i_clka)
     begin
-        if rising_edge(i_clka) then
-            if (resetn_a = '0') then
-                wptr <= (others => '0');
-            else
-                if (i_valid_a = '1' and fifo_full = '0') then
-                    wptr <= wptr + 1;
-                end if;
+        if (i_aresetn = '0') then
+            wptr <= (others => '0');
+        elsif rising_edge(i_clka) then
+            if (i_valid_a = '1' and fifo_full = '0') then
+                wptr <= wptr + 1;
             end if;
         end if;
     end process WptrCtrl;
@@ -127,9 +125,12 @@ begin
     wptr_s <= std_logic_vector(wptr);
     wptr_g <= bin2gray(wptr_s);
 
-    BSideWptrConversion: process(i_clkb)
+    BSideWptrConversion: process(i_clkb, i_aresetn)
     begin
-        if rising_edge(i_clkb) then
+        if (i_aresetn = '0') then
+            wptr_g_s0 <= (others => '0');
+            wptr_g_s1 <= (others => '0');
+        elsif rising_edge(i_clkb) then
             wptr_g_s0 <= wptr_g;
             wptr_g_s1 <= wptr_g_s0;
         end if;
@@ -137,26 +138,30 @@ begin
 
     wptr_b <= unsigned(gray2bin(wptr_g_s1));
 
-    BSideStatusSignals: process(i_clkb)
+    BSideStatusSignals: process(i_clkb, i_aresetn)
     begin
-        if rising_edge(i_clkb) then
-            fifo_empty <= '0';
+        if (i_aresetn = '0') then
+            fifo_empty  <= '1';
             fifo_aempty <= '0';
-
+        elsif rising_edge(i_clkb) then
             if (wptr_b = rptr) then
                 fifo_empty <= '1';
+            else
+                fifo_empty  <= '0';
             end if;
-
+            
             if (rptr = wptr_b - 1) then
                 fifo_aempty <= '1';
+            else
+                fifo_aempty <= '0';
             end if;
         end if;
     end process BSideStatusSignals;
 
-    ASidePulseExtender: process(i_clka, i_resetn)
+    ASidePulseExtender: process(i_clka, i_aresetn)
         variable timer : natural range 0 to 2 := 2;
     begin
-        if (i_resetn = '0') then
+        if (i_aresetn = '0') then
             resetn_a <= '0';
             timer := 2;
         elsif rising_edge(i_clka) then
@@ -168,10 +173,10 @@ begin
         end if;
     end process ASidePulseExtender;
 
-    BSidePulseExtender: process(i_clkb, i_resetn)
+    BSidePulseExtender: process(i_clkb, i_aresetn)
         variable timer : natural range 0 to 2 := 2;
     begin
-        if (i_resetn = '0') then
+        if (i_aresetn = '0') then
             resetn_b <= '0';
             timer := 2;
         elsif rising_edge(i_clkb) then
@@ -183,16 +188,14 @@ begin
         end if;
     end process BSidePulseExtender;
 
-    RptrCtrl: process(i_clkb)
+    RptrCtrl: process(i_clkb, i_aresetn)
     begin
-        if rising_edge(i_clkb) then
-            if (resetn_b = '0') then
-                rptr <= (others => '0');
-            else
-                o_valid_b <= i_pop_b and not fifo_empty;
-                if (i_pop_b = '1' and fifo_empty = '0') then
-                    rptr <= rptr + 1;
-                end if;
+        if (i_aresetn = '0') then
+            rptr <= (others => '0');
+        elsif rising_edge(i_clkb) then
+            o_valid_b <= i_pop_b and not fifo_empty;
+            if (i_pop_b = '1' and fifo_empty = '0') then
+                rptr <= rptr + 1;
             end if;
         end if;
     end process RptrCtrl;
@@ -200,9 +203,12 @@ begin
     rptr_s <= std_logic_vector(rptr);
     rptr_g <= bin2gray(rptr_s);
 
-    ASideRptrConversion: process(i_clka)
+    ASideRptrConversion: process(i_clka, i_aresetn)
     begin
-        if rising_edge(i_clka) then
+        if (i_aresetn = '0') then
+            rptr_g_s0 <= (others => '0');
+            rptr_g_s1 <= (others => '0');
+        elsif rising_edge(i_clka) then
             rptr_g_s0 <= rptr_g;
             rptr_g_s1 <= rptr_g_s0;
         end if;
@@ -210,18 +216,22 @@ begin
 
     rptr_a <= unsigned(gray2bin(rptr_g_s1));
 
-    ASideStatusSignals: process(i_clka)
+    ASideStatusSignals: process(i_clka, i_aresetn)
     begin
-        if rising_edge(i_clka) then
+        if (i_aresetn = '0') then
             fifo_full <= '0';
             fifo_afull <= '0';
-            
+        elsif rising_edge(i_clka) then
             if (wptr = rptr_a - 1) then
                 fifo_full <= '1';
+            else
+                fifo_full <= '0';
             end if;
-
+            
             if (wptr = rptr_a - 2) then
                 fifo_afull <= '1';
+            else
+                fifo_afull <= '0';
             end if;
         end if;
     end process ASideStatusSignals;

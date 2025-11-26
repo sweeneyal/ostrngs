@@ -37,7 +37,7 @@ begin
     
     StateMachine: process(i_clk)
         variable bitIndex : natural range 0 to cBitIndexMax := 0;
-        variable bitTimer : natural range 0 to cClocksPerBit := 0;
+        variable bitTimer : natural range 0 to cClocksPerBit - 1 := 0;
     begin
         if rising_edge(i_clk) then
             if (i_resetn = '0') then
@@ -68,8 +68,9 @@ begin
                         bitTimer := cClocksPerBit - 1;
 
                     when SEND_BIT =>
+                        bitTimer := bitTimer - 1;
                         if (bitTimer > 0) then
-                            bitTimer := bitTimer - 1;
+                            state <= SEND_BIT;
                         else
                             if (bitIndex = cBitIndexMax) then
                                 state <= READY_STATE;

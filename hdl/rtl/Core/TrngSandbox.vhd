@@ -49,6 +49,8 @@ entity TrngSandbox is
 
         -- entropy source selection
         i_rng_addr   : in std_logic_vector(7 downto 0);
+        -- entropy source enable signals
+        i_rng_enable : in std_logic_vector(7 downto 0);
         -- entropy source sample clock
         o_rng_clk    : out std_logic;
         -- entropy sample output 
@@ -56,6 +58,8 @@ entity TrngSandbox is
         -- indicator that entropy sample is valid
         o_rng_dvalid : out std_logic;
 
+        -- external fifo clear signal to empty fifo between reads and writes
+        i_fifo_clear  : in std_logic;
         -- external fifo pop signal to output stored TRNG data
         i_fifo_pop    : in std_logic;
         -- external fifo output data bus
@@ -111,6 +115,7 @@ begin
         i_resetn => i_resetn,
 
         i_rng_addr   => i_rng_addr,
+        i_rng_enable => i_rng_enable,
         o_rng_clk    => rng_clk,
         o_rng_data   => rng_data,
         o_rng_dvalid => rng_dvalid,
@@ -134,13 +139,14 @@ begin
         cFifoWidth   => cFifoWidth,
         cFifoDepth   => cFifoDepth
     ) port map (
-        i_resetn     => i_resetn,
+        i_resetn    => i_resetn,
 
         i_rng_clk    => rng_clk,
         i_rng_data   => rng_data,
         i_rng_dvalid => rng_dvalid,
         
         i_fifo_clk    => i_clk,
+        i_fifo_clear  => i_fifo_clear,
         i_fifo_pop    => i_fifo_pop,
         o_fifo_data   => o_fifo_data,
         o_fifo_dvalid => o_fifo_dvalid,
