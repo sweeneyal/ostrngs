@@ -2,6 +2,7 @@ docs/latex/*
 !docs/latex/*.tex
 !docs/latex/*.bib
 !docs/latex/figures
+!docs/latex/rngs
 
 **__pycache__**
 *.venv

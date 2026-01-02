@@ -5,26 +5,26 @@ in order to ensure the fundamental requirements of confidentiality, integrity, a
 non-repudiation. Random numbers are used extensively in cryptography, such as the recent
 post-quantum cryptographic public key encryption algorithm, ML-KEM. The widespread need for random
 number generation has led to dozens of publications proposing implementations of entropy sources
-based on metastability, jitter, thermal noise, and chaos. This work seeks to catalog several of these 
-entropy sources, discuss their implementations, and provide open access to all entropy sources in this 
-catalog. In addition to the implementation source, a demonstration platform targeting common AMD FPGA 
-platforms is provided in parallel for further evaluation of each entropy source's implementation. Finally, 
-min-entropy estimates using NIST SP 800-90B on each entropy source are performed, provided, and discussed
-at length.
+based on metastability, jitter, thermal noise, and chaos, using a variety of entropy harvesting techniques. 
+This work seeks to catalog several of these entropy sources, discuss their implementations, and provide 
+open access to all entropy sources in this catalog. In addition to the implementation source, a demonstration 
+platform targeting common AMD FPGA platforms is provided in parallel for further evaluation of each 
+entropy source's implementation. Finally, min-entropy estimates using NIST SP 800-90B on each entropy source 
+are performed, provided, and discussed at length.
 
 Several recent strides have been made towards security through transparency in the hardware world; 
 Raspberry Pi has recently concluded a first security challenge inviting hardware security experts
 to attack the security of one-time-programmable (OTP) regions on their new RP2350 microcontroller.
 They have since further announced a currently active security challege inviting more experts to 
 perform side channel analysis (SCA) attacks on a hardened AES implementation. Though so-called bug 
-bounties and inviting security experts probe new products is nothing new, transparency in chip 
+bounties and ethical disclosure of vulnerabilities in products is nothing new, transparency in chip 
 security for commercial products improves consumer confidence in the chip they purchase. 
 
 Furthermore, new rue random number generators (TRNGs) and entropy sources based on metastability, 
 jitter, chaotic boolean networks, and other sources are proposed, developed, and published at a 
 rapid rate. Providing open access to a verified implementation of each new advancement allows 
-security experts, consumers, regulators, and researchers to most quickly and easily iterate and 
-advance the capabilities of entropy sources to better meet their target requirements.
+security experts, consumers, regulators, and researchers to most quickly and easily verify and produce
+new designs using these entropy sources.
 
 This paper seeks to provide firstly a catalog of open-source entropy sources developed in the 
 literature, providing models and documentation for the implementation provided, and secondly 

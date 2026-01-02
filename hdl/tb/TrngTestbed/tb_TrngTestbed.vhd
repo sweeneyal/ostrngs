@@ -326,10 +326,10 @@ begin
                 end loop;
 
                 wait for 50 ns;
-                axi_write(in_s_axi, out_s_axi, "1000000100", "000", x"00000001", "1111");
+                axi_write(in_s_axi, out_s_axi, "1000000100", "000", x"0000FF01", "1111");
 
                 rdata := x"00000001";
-                while (rdata = x"00000001") loop
+                while (rdata(0) = '1') loop
                     wait for 50 ns;
                     axi_read(in_s_axi, out_s_axi, "1000000100", "000", rdata);
                 end loop;

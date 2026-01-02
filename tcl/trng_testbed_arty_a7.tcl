@@ -435,6 +435,22 @@ proc create_root_design { parentCell } {
   ] $ram_interconnect
 
 
+  # Create instance: ila_0, and set properties
+  set ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_0 ]
+  set_property -dict [list \
+    CONFIG.C_ADV_TRIGGER {true} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+  ] $ila_0
+
+
+  # Create instance: ila_1, and set properties
+  set ila_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_1 ]
+  set_property -dict [list \
+    CONFIG.C_ADV_TRIGGER {true} \
+    CONFIG.C_EN_STRG_QUAL {1} \
+  ] $ila_1
+
+
   # Create instance: TrngController_0, and set properties
   set block_name TrngController
   set block_cell_name TrngController_0
@@ -450,18 +466,6 @@ proc create_root_design { parentCell } {
     CONFIG.cUartBaudRate_bps {12000000} \
   ] $TrngController_0
 
-
-  # Create instance: ila_0, and set properties
-  set ila_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_0 ]
-  set_property -dict [list \
-    CONFIG.C_ADV_TRIGGER {true} \
-    CONFIG.C_DATA_DEPTH {2048} \
-    CONFIG.C_EN_STRG_QUAL {1} \
-  ] $ila_0
-
-
-  # Create instance: ila_1, and set properties
-  set ila_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:ila:6.2 ila_1 ]
 
   # Create instance: TrngTestbed_0, and set properties
   set block_name TrngTestbed
@@ -491,9 +495,9 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets TrngTestbed_0_m_axi_mem] [get_bd
   connect_bd_net -net TrngController_0_o_uart_tx [get_bd_pins TrngController_0/o_uart_tx] [get_bd_ports o_uart_tx]
   connect_bd_net -net clk_wiz_0_clk_out2 [get_bd_pins clk_wiz_0/clk_out2] [get_bd_pins mig_7series_0/clk_ref_i]
   connect_bd_net -net i_uart_rx_1 [get_bd_ports i_uart_rx] [get_bd_pins TrngController_0/i_uart_rx]
-  connect_bd_net -net microblaze_0_Clk [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins perif_interconnect/M00_ACLK] [get_bd_pins perif_interconnect/M01_ACLK] [get_bd_pins perif_interconnect/ACLK] [get_bd_pins perif_interconnect/S00_ACLK] [get_bd_pins ram_interconnect/ACLK] [get_bd_pins ram_interconnect/S00_ACLK] [get_bd_pins ram_interconnect/S01_ACLK] [get_bd_pins TrngController_0/i_clk] [get_bd_pins ila_0/clk] [get_bd_pins ila_1/clk] [get_bd_pins TrngTestbed_0/i_clk]
+  connect_bd_net -net microblaze_0_Clk [get_bd_pins clk_wiz_0/clk_out1] [get_bd_pins perif_interconnect/M00_ACLK] [get_bd_pins perif_interconnect/M01_ACLK] [get_bd_pins perif_interconnect/ACLK] [get_bd_pins perif_interconnect/S00_ACLK] [get_bd_pins ram_interconnect/ACLK] [get_bd_pins ram_interconnect/S00_ACLK] [get_bd_pins ram_interconnect/S01_ACLK] [get_bd_pins ila_0/clk] [get_bd_pins ila_1/clk] [get_bd_pins TrngController_0/i_clk] [get_bd_pins TrngTestbed_0/i_clk]
   connect_bd_net -net mig_7series_0_ui_clk [get_bd_pins mig_7series_0/ui_clk] [get_bd_pins ram_interconnect/M00_ACLK]
-  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_ports i_resetn] [get_bd_pins perif_interconnect/M00_ARESETN] [get_bd_pins perif_interconnect/M01_ARESETN] [get_bd_pins perif_interconnect/ARESETN] [get_bd_pins perif_interconnect/S00_ARESETN] [get_bd_pins ram_interconnect/ARESETN] [get_bd_pins ram_interconnect/S00_ARESETN] [get_bd_pins ram_interconnect/S01_ARESETN] [get_bd_pins ram_interconnect/M00_ARESETN] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins TrngController_0/i_resetn] [get_bd_pins mig_7series_0/sys_rst] [get_bd_pins TrngTestbed_0/i_resetn]
+  connect_bd_net -net rst_clk_wiz_0_100M_peripheral_aresetn [get_bd_ports i_resetn] [get_bd_pins perif_interconnect/M00_ARESETN] [get_bd_pins perif_interconnect/M01_ARESETN] [get_bd_pins perif_interconnect/ARESETN] [get_bd_pins perif_interconnect/S00_ARESETN] [get_bd_pins ram_interconnect/ARESETN] [get_bd_pins ram_interconnect/S00_ARESETN] [get_bd_pins ram_interconnect/S01_ARESETN] [get_bd_pins ram_interconnect/M00_ARESETN] [get_bd_pins mig_7series_0/aresetn] [get_bd_pins mig_7series_0/sys_rst] [get_bd_pins TrngController_0/i_resetn] [get_bd_pins TrngTestbed_0/i_resetn]
   connect_bd_net -net util_ds_buf_0_BUFG_O [get_bd_pins util_ds_buf_0/BUFG_O] [get_bd_pins mig_7series_0/sys_clk_i] [get_bd_pins clk_wiz_0/clk_in1]
 
   # Create address segments
@@ -505,6 +509,7 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets TrngTestbed_0_m_axi_mem] [get_bd
   # Restore current instance
   current_bd_instance $oldCurInst
 
+  validate_bd_design
   save_bd_design
 }
 # End of create_root_design()
@@ -516,6 +521,4 @@ connect_bd_intf_net -intf_net [get_bd_intf_nets TrngTestbed_0_m_axi_mem] [get_bd
 
 create_root_design ""
 
-
-common::send_gid_msg -ssname BD::TCL -id 2053 -severity "WARNING" "This Tcl script was generated from a block design that has not been validated. It is possible that design <$design_name> may result in errors during validation."
 

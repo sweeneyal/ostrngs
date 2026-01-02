@@ -216,7 +216,10 @@ if __name__ == "__main__":
 
     s = Supervisor("/dev/ttyUSB1", 12000000)
     s.open()
-    s.set_entropy_source(5)
+
+    s.set_status(0, 0)
+
+    s.set_entropy_source(1)
     print(f"Selected entropy source: {s.get_entropy_source()}")
 
     s.set_total(1_000)
@@ -227,11 +230,11 @@ if __name__ == "__main__":
 
     # This will set the mode to 1, which is DDR write mode, with 
     # only entropy source 5 enabled.
-    s.set_status(1, 0b00100000)
+    s.set_status(1, 1 << 1)
 
-    time.sleep(5)
+    time.sleep(1)
     while s.get_mode() != 0:
-        time.sleep(5)
+        time.sleep(1)
 
     capture = s.read_ddr()
 
