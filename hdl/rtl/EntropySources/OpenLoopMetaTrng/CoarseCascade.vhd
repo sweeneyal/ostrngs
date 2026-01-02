@@ -29,6 +29,10 @@ end entity CoarseCascade;
 architecture rtl of CoarseCascade is
     signal c : std_logic_vector(cNumStages downto 0) := (others => '0');
     signal d : std_logic_vector(cNumStages downto 0) := (others => '0');
+
+    attribute DONT_TOUCH : string;
+    attribute DONT_TOUCH of c : signal is "true";
+    attribute DONT_TOUCH of d : signal is "true";
 begin
     
     -- Make this synthesizable. Only know how to force this to be a LUT with a DONT_TOUCH
@@ -39,16 +43,16 @@ begin
 
         Mux21_Clk: process(i_ctrc(g_ii), c(g_ii), i_clk)
         begin
-            if (i_ctrc(g_ii) = '1') then
+            if (i_ctrc(g_ii) = '0') then
                 c(g_ii + 1) <= transport c(g_ii) after cSimulatedDelay_ps * 1 ps;
             else
                 c(g_ii + 1) <= i_clk;
             end if;            
         end process Mux21_Clk;
 
-        Mux21_Data: process(i_ctrc(g_ii), d(g_ii), i_clk)
+        Mux21_Data: process(i_ctrd(g_ii), d(g_ii), i_clk)
         begin
-            if (i_ctrc(g_ii) = '1') then
+            if (i_ctrd(g_ii) = '0') then
                 d(g_ii + 1) <= transport d(g_ii) after cSimulatedDelay_ps * 1 ps;
             else
                 d(g_ii + 1) <= i_clk;

@@ -44,13 +44,26 @@ optproc ::ostrngs::import_sources {{mode "project"}} {
             $ostrngs::home/hdl/rtl/Core/TrngSandbox.vhd
             $ostrngs::home/hdl/rtl/Core/TrngStorage.vhd
             $ostrngs::home/hdl/rtl/Core/TrngTestbedCore.vhd
-            $ostrngs::home/hdl/rtl/MeshCoupledXor/CxUnit.vhd
-            $ostrngs::home/hdl/rtl/MeshCoupledXor/MeshCoupledXor.vhd
-            $ostrngs::home/hdl/rtl/OpenLoopMetaTrng/CoarseCascade.vhd
-            $ostrngs::home/hdl/rtl/OpenLoopMetaTrng/OpenLoopMetaTrng.vhd
-            $ostrngs::home/hdl/rtl/StrTrng/StrTrng.vhd
-            $ostrngs::home/hdl/rtl/StrTrng/MullerC.vhd
-            $ostrngs::home/hdl/rtl/StrTrng/SelfTimedRing.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/DigitalNonlinearOscillator/DigitalNonlinearOscillator.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/DigitalNonlinearOscillator/DnoTrng.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/HybridFfsrTrng/DynamicSampler.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/HybridFfsrTrng/EntropyInjector.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/HybridFfsrTrng/FeedforwardShiftRegister.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/HybridFfsrTrng/HybridFfsrTrng.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/LwxnorTrng/Lwxnor.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/LwxnorTrng/LwxnorLut.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/LwxnorTrng/LwxnorLutTrng.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/LwxnorTrng/LwxnorTrng.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/LwxnorTrng/RoLdce.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/LwxnorTrng/RoLdceTrng.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/MeshCoupledXor/CxUnit.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/MeshCoupledXor/MeshCoupledXor.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/OpenLoopMetaTrng/CoarseCascade.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/OpenLoopMetaTrng/OpenLoopMetaTrng.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/StrTrng/StrTrng.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/StrTrng/MullerC.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/StrTrng/SelfTimedRing.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/XorRingTrng/XorRingTrng.vhd
             $ostrngs::home/hdl/rtl/TrngController.vhd
             $ostrngs::home/hdl/rtl/TrngTestbed.vhd
         "

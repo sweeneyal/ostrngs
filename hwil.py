@@ -87,6 +87,11 @@ def run_restart_collection(s : Supervisor, source):
     with open(path, "wb") as f:
         f.write(collection)
 
-for ii in range(8):
-    run_sequential_collection(s, ii)
-    run_restart_collection(s, ii)
+# for ii in range(8):
+#     run_sequential_collection(s, ii)
+#     run_restart_collection(s, ii)
+
+run_sequential_collection(s, 1)
+run_restart_collection(s, 1)
+run_sequential_collection(s, 2)
+run_restart_collection(s, 2)

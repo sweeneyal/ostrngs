@@ -22,7 +22,8 @@ entity OpenLoopMetaTrng is
     port (
         i_clk    : in std_logic;
         i_resetn : in std_logic;
-        o_rng    : out std_logic_vector(0 downto 0)
+        o_rng    : out std_logic_vector(0 downto 0);
+        o_valid  : out std_logic
     );
 end entity OpenLoopMetaTrng;
 
@@ -32,6 +33,7 @@ architecture rtl of OpenLoopMetaTrng is
 
     signal c       : std_logic_vector(cNumFineStages downto 0) := (others => '0');
     signal d       : std_logic_vector(cNumFineStages downto 0) := (others => '0');
+    signal d_latch : std_logic_vector(cNumFineStages - 1 downto 0) := (others => '0');
     signal d_reg   : std_logic_vector(cNumFineStages - 1 downto 0) := (others => '0');
     signal merge_d : std_logic := '0';
 
@@ -69,18 +71,27 @@ begin
         c(g_ii + 1) <= transport c(g_ii) after cSimFineDelay_ps * 1 ps;
         d(g_ii + 1) <= transport d(g_ii) after cSimFineDelay_ps * 1 ps;
 
-        SampleFlops: process(c(g_ii))
+        SampleLatches: process(i_resetn, c(g_ii))
         begin
-            if rising_edge(c(g_ii)) then
-                if (i_resetn = '0') then
-                    d_reg(g_ii) <= '0';
-                else
-                    d_reg(g_ii) <= d(g_ii);
-                end if;
+            if (i_resetn = '0') then
+                d_latch(g_ii) <= '0';
+            elsif (c(g_ii) = '0') then
+                d_latch(g_ii) <= d(g_ii);
             end if;
-        end process SampleFlops;
+        end process SampleLatches;
 
     end generate gFineDelayGeneration; 
+
+    SamplingFlops: process(i_clk)
+    begin
+        if rising_edge(i_clk) then
+            if (i_resetn = '0') then
+                d_reg <= (others => '0');
+            else
+                d_reg <= d_latch;
+            end if;
+        end if;
+    end process SamplingFlops;
 
     -- This component is unique to our implementation, and seeks to identify the configuration
     -- with the most good random bits for application in the final xor summer.
@@ -104,6 +115,7 @@ begin
                 ctrd_bit   := 0;
                 health     := 0;
                 max_health := 0;
+                o_valid    <= '0';
             else
                 case state is
                     when RESET =>
@@ -137,12 +149,12 @@ begin
                             ctrc(ctrc_bit) <= '1';
                             ctrd(ctrd_bit) <= '1';
 
-                            if ctrc_bit < cNumCoarseStages - 1 then
-                                ctrc_bit := ctrc_bit + 1;
+                            if ctrd_bit < cNumCoarseStages - 1 then
+                                ctrd_bit := ctrd_bit + 1;
                             else
-                                ctrc_bit := 0;
-                                if (ctrd_bit < cNumCoarseStages - 1) then
-                                    ctrd_bit := ctrd_bit + 1;
+                                ctrd_bit := 0;
+                                if (ctrc_bit < cNumCoarseStages - 1) then
+                                    ctrc_bit := ctrc_bit + 1;
                                 else
                                     state <= ACTIVE;
                                     ctrc  <= max_ctrc;
@@ -152,6 +164,7 @@ begin
                         end if;
                 
                     when ACTIVE =>
+                        o_valid <= '1';
                         if (timer > 0) then
                             health := 0;
                             timer  := timer - 1;

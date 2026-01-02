@@ -288,8 +288,25 @@ begin
                 o_s_axi_arready <= '0';
                 o_s_axi_rvalid  <= '0';
 
+                o_m_axi_awvalid <= '0';
+                o_m_axi_arvalid <= '0';
+                o_m_axi_wvalid  <= '0';
+                o_m_axi_bready  <= '0';
+
                 resetn <= '0';
                 seq := (others => '0');
+
+                status <= status_t'(
+                    -- Mode and enable are colocated in order to have them 
+                    -- update simultaneously.
+                    mode     => (others => '0'), 
+                    enable   => (others => '0'),
+                    total    => (others => '0'),
+                    count    => (others => '0'),
+                    rng_addr => (others => '0'),
+                    mem_addr => cMemoryDefaultAddress,
+                    health   => (others => '0')
+                );
             else
                 -- Default the fifo clear signal to '0' so we only clear it
                 -- when the RNG or the MODE changes.

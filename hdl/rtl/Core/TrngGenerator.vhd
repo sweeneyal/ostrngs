@@ -201,18 +201,17 @@ begin
             eOpenLoopMeta : entity ostrngs.OpenLoopMetaTrng
             port map (
                 i_clk    => rng_clk,
-                i_resetn => rng_resetn,
-                o_rng    => local_rng
+                i_resetn => local_resetn,
+                o_rng    => local_rng,
+                o_valid  => rng_dvalid(g_ii)
             );
 
             -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
-            sel(g_ii) <= std_logic_vector(to_unsigned(1, cNumClocks - 1));
+            sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
 
             -- Resize the random sample to fit into the o_rng_data bus.
             rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
 
-            -- This entropy source generates a new random sample every clock cycle it is active.
-            rng_dvalid(g_ii) <= local_resetn;
         end generate gOpenLoopMetaTrng;
 
         gStrTrng: if (cEntropySources(g_ii) = padded("StrTrng", 256)) generate
@@ -238,12 +237,12 @@ begin
             eStrTrng : entity ostrngs.StrTrng
             port map (
                 i_clk    => rng_clk,
-                i_resetn => rng_resetn,
+                i_resetn => local_resetn,
                 o_rng    => local_rng
             );
 
             -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
-            sel(g_ii) <= std_logic_vector(to_unsigned(1, cNumClocks - 1));
+            sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
 
             -- Resize the random sample to fit into the o_rng_data bus.
             rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
@@ -252,9 +251,242 @@ begin
             rng_dvalid(g_ii) <= local_resetn;
         end generate gStrTrng;
 
+        gXorRingTrng: if (cEntropySources(g_ii) = padded("XorRingTrng", 256)) generate
+            signal local_rng : std_logic_vector(0 downto 0) := "0";
+            signal local_resetn : std_logic;
+        begin
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
+        
+            eXorRingTrng : entity ostrngs.XorRingTrng
+            port map (
+                i_clk    => rng_clk,
+                i_resetn => local_resetn,
+                o_rng    => local_rng,
+                o_valid  => rng_dvalid(g_ii)
+            );
+
+            -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
+            sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
+
+            -- Resize the random sample to fit into the o_rng_data bus.
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
+
+        end generate gXorRingTrng;
+
+        gDnoTrng: if (cEntropySources(g_ii) = padded("DigitalNonlinearOscillator", 256)) generate
+            signal local_rng : std_logic_vector(0 downto 0) := "0";
+            signal local_resetn : std_logic;
+        begin
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
+        
+            eDnoTrng : entity ostrngs.DnoTrng
+            port map (
+                i_clk    => rng_clk,
+                i_resetn => local_resetn,
+                o_rng    => local_rng,
+                o_valid  => rng_dvalid(g_ii)
+            );
+
+            -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
+            sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
+
+            -- Resize the random sample to fit into the o_rng_data bus.
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
+
+        end generate gDnoTrng;
+
+        gHybridFfsrTrng: if (cEntropySources(g_ii) = padded("HybridFfsrTrng", 256)) generate
+            signal local_rng : std_logic_vector(0 downto 0) := "0";
+            signal local_resetn : std_logic;
+        begin
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
+        
+            eHybridFfsrTrng : entity ostrngs.HybridFfsrTrng
+            port map (
+                i_clk    => rng_clk,
+                i_resetn => local_resetn,
+                o_rng    => local_rng,
+                o_valid  => rng_dvalid(g_ii)
+            );
+
+            -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
+            sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
+
+            -- Resize the random sample to fit into the o_rng_data bus.
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
+
+        end generate gHybridFfsrTrng;
+
+        gLwxnorLutTrng: if (cEntropySources(g_ii) = padded("LwxnorLutTrng", 256)) generate
+            signal local_rng : std_logic_vector(0 downto 0) := "0";
+            signal local_resetn : std_logic;
+        begin
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
+        
+            eLwxnorLutTrng : entity ostrngs.LwxnorLutTrng
+            port map (
+                i_clk    => rng_clk,
+                i_resetn => local_resetn,
+                o_rng    => local_rng,
+                o_valid  => rng_dvalid(g_ii)
+            );
+
+            -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
+            sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
+
+            -- Resize the random sample to fit into the o_rng_data bus.
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
+
+        end generate gLwxnorLutTrng;
+
+        gLwxnorTrng: if (cEntropySources(g_ii) = padded("LwxnorTrng", 256)) generate
+            signal local_rng : std_logic_vector(0 downto 0) := "0";
+            signal local_resetn : std_logic;
+        begin
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
+        
+            eLwxnorTrng : entity ostrngs.LwxnorTrng
+            port map (
+                i_clk    => rng_clk,
+                i_resetn => local_resetn,
+                o_rng    => local_rng,
+                o_valid  => rng_dvalid(g_ii)
+            );
+
+            -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
+            sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
+
+            -- Resize the random sample to fit into the o_rng_data bus.
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
+
+        end generate gLwxnorTrng;
+
+        gRoLdceTrng: if (cEntropySources(g_ii) = padded("RoLdceTrng", 256)) generate
+            signal local_rng : std_logic_vector(0 downto 0) := "0";
+            signal local_resetn : std_logic;
+        begin
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
+        
+            eRoLdceTrng : entity ostrngs.RoLdceTrng
+            port map (
+                i_clk    => rng_clk,
+                i_resetn => local_resetn,
+                o_rng    => local_rng,
+                o_valid  => rng_dvalid(g_ii)
+            );
+
+            -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
+            sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
+
+            -- Resize the random sample to fit into the o_rng_data bus.
+            rng(g_ii) <= std_logic_vector(resize(unsigned(local_rng), 8 * cDataWidth_B));
+
+        end generate gRoLdceTrng;
+
         gNonSynth: if (cEntropySources(g_ii) = padded("Simulation", 256)) generate
+            signal local_resetn : std_logic;
+        begin
 
             -- synthesis_translate off
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
 
             SimulatedEntropySource: process(rng_clk)
                 variable seed1, seed2 : integer := 999 / (g_ii + 1);
@@ -275,7 +507,7 @@ begin
                     rng(g_ii) <= rand_slv(8 * cDataWidth_B);
                     -- 
                     -- This entropy source generates a new random sample every clock cycle it is active.
-                    rng_dvalid(g_ii) <= rng_resetn and i_rng_enable(g_ii);
+                    rng_dvalid(g_ii) <= local_resetn and i_rng_enable(g_ii);
                 end if;
             end process SimulatedEntropySource;
 

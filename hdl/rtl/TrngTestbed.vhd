@@ -30,13 +30,13 @@ entity TrngTestbed is
         cNumEntropySources    : positive range 1 to 8 := 8;
         -- Provides a mechanism to instantiate various unique entropy sources
         cEntropySource00      : string := "MeshCoupledXor";
-        cEntropySource01      : string := "MeshCoupledXor";
-        cEntropySource02      : string := "MeshCoupledXor";
-        cEntropySource03      : string := "MeshCoupledXor";
-        cEntropySource04      : string := "MeshCoupledXor";
-        cEntropySource05      : string := "MeshCoupledXor";
-        cEntropySource06      : string := "MeshCoupledXor";
-        cEntropySource07      : string := "MeshCoupledXor";
+        cEntropySource01      : string := "OpenLoopMetaTrng";
+        cEntropySource02      : string := "LwxnorLutTrng";
+        cEntropySource03      : string := "XorRingTrng";
+        cEntropySource04      : string := "DigitalNonlinearOscillator";
+        cEntropySource05      : string := "HybridFfsrTrng";
+        cEntropySource06      : string := "LwxnorTrng";
+        cEntropySource07      : string := "RoLdceTrng";
         -- Fifo depth in groups of samples
         cFifoDepth            : positive := 1024;
         -- Fifo width in samples
