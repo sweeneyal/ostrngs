@@ -2,34 +2,56 @@
 
 Secure true random number generation is an important problem for the security of communication, 
 in order to ensure the fundamental requirements of confidentiality, integrity, availability, and
-non-repudiation. Random numbers are used extensively in cryptography, such as the recent
-post-quantum cryptographic public key encryption algorithm, ML-KEM. The widespread need for random
+non-repudiation. Random numbers are used extensively in cryptography, such as during key generation in 
+the recent post-quantum cryptographic public key encryption algorithm, ML-KEM. The widespread need for random
 number generation has led to dozens of publications proposing implementations of entropy sources
 based on metastability, jitter, thermal noise, and chaos, using a variety of entropy harvesting techniques. 
-This work seeks to catalog several of these entropy sources, discuss their implementations, and provide 
-open access to all entropy sources in this catalog. In addition to the implementation source, a demonstration 
-platform targeting common AMD FPGA platforms is provided in parallel for further evaluation of each 
-entropy source's implementation. Finally, min-entropy estimates using NIST SP 800-90B on each entropy source 
-are performed, provided, and discussed at length.
+Meanwhile, many computing platforms on the market today are sold with built-in cryptoprocessors 
+(and thus built-in TRNGs) in parallel with the performance platform, but these can often be proprietary 
+with potential zero-day exploits hidden behind a black box for a determined and well-resourced attacker to find. 
+Several recent strides have been made towards security through transparency in the hardware world; Raspberry Pi 
+has recently conducted several security challenges inviting hardware security experts to attack the security of 
+their new RP2350 microcontroller. In another example, OpenTitan is an impressive open-source root-of-trust (RoT)
+project that is a model for the philosophy of security through transparency. Though bug bounties and ethical 
+vulnerability disclosure is nothing new, transparency in chip security for commercial products improves consumer 
+confidence in the chip they purchase. 
 
-Several recent strides have been made towards security through transparency in the hardware world; 
-Raspberry Pi has recently concluded a first security challenge inviting hardware security experts
-to attack the security of one-time-programmable (OTP) regions on their new RP2350 microcontroller.
-They have since further announced a currently active security challege inviting more experts to 
-perform side channel analysis (SCA) attacks on a hardened AES implementation. Though so-called bug 
-bounties and ethical disclosure of vulnerabilities in products is nothing new, transparency in chip 
-security for commercial products improves consumer confidence in the chip they purchase. 
-
-Furthermore, new rue random number generators (TRNGs) and entropy sources based on metastability, 
+Furthermore, new true random number generators (TRNGs) and entropy sources based on metastability, 
 jitter, chaotic boolean networks, and other sources are proposed, developed, and published at a 
 rapid rate. Providing open access to a verified implementation of each new advancement allows 
 security experts, consumers, regulators, and researchers to most quickly and easily verify and produce
-new designs using these entropy sources.
+new designs using these entropy sources. Existing work has been done already to make ring-oscillator (RO) based
+TRNGs, emulation of them, and their analysis available to the community, but the work can be extended for 
+integration into processor platforms, while also standardizing the interfaces to entropy sources to integrate 
+into anywhere. For the benefit of the community, this work seeks to reduce the barrier to access by providing modeling,
+hardware implementation, and analysis, as well as contribute to the open dialog of hardware security through transparency.
 
-This paper seeks to provide firstly a catalog of open-source entropy sources developed in the 
-literature, providing models and documentation for the implementation provided, and secondly 
-a set of  automated, open-source, Python-based tools by which these entropy sources may be 
-evaluated on a given commercially available AMD FPGA platform.
+Foundational work by Petura et. al. produced an open-source catalog of six RO-based TRNGs, implemented such that 
+they used the minimum possible components on high-end, low noise power supplies in order to ensure their measurements 
+were as pure and free from deterministic noise as possible. From a design perspective, this is absolutely a reasonable
+approach. However, each entropy source will eventually be integrated into a platform where other noise from nearby 
+components is inescapable. The lifecycle of a given IP starts from an idea, is implemented into a proof of concept, and
+then eventually implemented as a prototype before eventual initial release. This work and the proposed platform is 
+intended to support the migration of proofs of concept into their eventual prototypes. Furthermore, to the benefit of 
+the open-source community, a platform that targets common development boards like the Arty A7 or Numato Skoll allows a 
+more widely accessible test device. All analysis and data collected with this platform of course comes with the caveat 
+of elevated platform noise as compared to standalone proofs of concept.
+
+\textit{Our contribution:}
+\begin{enumerate}
+    \item We provide a catalog of open-source entropy sources developed in recent literature.
+    \item We explore, document, and demonstrate a variety of entropy generation techniques.
+    \item We provide a playground of emulation models of each entropy generation technique.
+    \item We package the catalog in a highly portable AXI-based interface for easy integration.
+    %\item Build upon and amplify existing research to .
+\end{enumerate}
+
+This paper is organized into four sections: related research, evaluation, the catalog itself, and the analysis of random
+data collected from each TRNG in the catalog. In the related reseach section, we discuss existing work done by Petura et.
+al. and Pebay-Peroula et. al. providing the foundation for this paper. In the evaluation, we broadly discuss and cite our 
+methods for modeling, implementing, and analyzing the collected catalog of TRNGs. Following evaluation, we discuss the 
+specific details regarding our implementation of each entropy source in depth, from concept to integration. Finally, 
+we analyze the TRNGs using the methods laid out in NIST SP800-22, -90b, and AIS 20/31.
 
 % TODO: original implementations each get a tex file
 % TODO: build overal demonstration platform (TrngTestbed?) that targets Arty A7 and Genesys 2

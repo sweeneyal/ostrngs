@@ -1,3 +1,9 @@
 [submodule "libraries/SP800-90B_EntropyAssessment"]
 	path = libraries/SP800-90B_EntropyAssessment
 	url = https://github.com/usnistgov/SP800-90B_EntropyAssessment.git
+[submodule "libraries/hector_trng_designs"]
+	path = libraries/hector_trng_designs
+	url = https://gitlab.univ-st-etienne.fr/oto.petura/hector_trng_designs.git
+[submodule "libraries/ptrng"]
+	path = libraries/ptrng
+	url = https://github.com/opentrng/ptrng.git

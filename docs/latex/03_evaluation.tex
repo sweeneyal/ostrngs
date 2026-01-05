@@ -1,0 +1,116 @@
+\section{Evaluation of Entropy Sources}
+
+In keeping with the precedent set by Pebay-Peroula et. al., the entropy sources collected in this catalog will
+be provided with emulation, hardware, and analysis. Additionally, due to AMD-Xilinx's significant dominance over the 
+FPGA market, several TRNGs using generic concepts have been developed using primitives specific to AMD-Xilinx FPGAs. 
+Often specific implementations require a specific primitive unavailable in other platforms, or have been intentionally 
+optimized to reduce utilization or match the paper's specification.
+
+\subsection{Emulation}
+
+Each entropy source should have some form of emulator or model with which to analyze its behavior and to compare
+results against. For many such entropy sources, the natural default modeling technique is SPICE modeling. 
+SPICE modeling is frequently used for simple TRNG circuit simulation, with parameters modified to see what effect the 
+unique hardware characteristics would produce, and thereby demonstrating the circuit as an entropy source. However,
+this modeling technique is not only complicated but slow, and so often other emulation techniques are used as appropriate
+to the entropy source.
+% Need to include reasons why and why not to go with SPICE modeling, e.g. for large networks or for certain entropy
+% sources.
+
+Pebay-Peroula et. al. provided several emulation techniques for the three supported TRNGs with emulated thermal and 
+flicker noise. % Discussion of their emulation techniques here.
+
+For chaotic TRNGs, several techniques exist in the literature. For example, Ghil and Mulhaupt's boolean delay equations
+are used to model longer-time-scale, discrete interactions between gates. In another example, Lu et. al. successfully used
+the techniques proposed by Gong et. al. to model their autonomous boolean network at a smaller time resolution and 
+mixed-signal/analog perspective. The modeling technique used within our paper for chaotic oscillators was proposed by 
+Sweeney et. al. for more accurate analog simulation of autonomous boolean networks.
+% Staple Sweeney et. al. here, if we want to publish it as part of this paper.
+% Otherwise we need to guide readers to refer to that paper for discussion of the pros and cons of that model.
+
+\subsection{Hardware Implementation and IP Core}
+
+Pebay-Peroula et. al. proposed a TRNG evaluation platform based on UART, an internal command processor, and a FIFO.
+Their hardware implementation provides a clear foundation on which to explore TRNGs. However, two shortcomings remain that
+reduce its ease of integration; firstly, their PTRNG IP has unique self-defined interface signals and secondly, the UART 
+interface is fundamentally limited by the bit rate. 
+
+Regarding the first point, having a unique self-defined interface creates an unintentional learning curve that increases
+barrier to entry. If one were to use their PTRNG IP as is, this is not an issue, but if one wanted to integrate their IP
+as part of another, e.g. as a cryptographic hardware accelerator, then the learning curve rears its ugly head. In fact, 
+this is fundamentally why standard buses like AXI or Wishbone exist; standardized interfaces allow easy integration with
+other IP.
+
+The foundational work done by Petura et. al. provides a huge step forward on behalf of the open source and hardware security
+communities; however, the same self-defined interface issue applies here. Their techniques for measurement and implementation
+also create a barrier to entry, as they do not provide a standard interface to their entropy sources for integration into other
+platforms. For example, Pebay-Peroula et. al. needed to reimplement three of their TRNGs to integrate them into their work;
+this duplication of effort partly defeats the purpose of open-source. At a fundamental level, every entropy source needs to be 
+verifiable as a standalone implementation as well as be integrable into a given platform. Thus, all of our entropy sources have
+the same set of interfaces tabulated in Table \ref{tab:interface_definitions}.
+
+\begin{table}
+    \centering
+    \caption{Fundamental TRNG Interface Definitions}
+    \begin{tabular}{|l|l|l|}
+        \hline
+        Signal    & Type               & Description \\
+        \hline
+        i\_clk    & std\_logic         & Sampling clock \\
+        i\_resetn & std\_logic         & Reset signal \\
+        o\_rng    & std\_logic\_vector & Bus of source-dependent width \\
+        o\_valid  & std\_logic         & Indicator of bus valid   \\
+        \hline
+    \end{tabular}
+    \label{tab:interface_definitions}
+\end{table}
+
+Regarding the second point, in their provided source code, they have the UART baud rate set to 115200 baud. Of course, 
+one can increase this parameter, but common FPGA platforms such as the Arty A7 have low data output rate compared to 
+modern TRNGs, even if the onboard FTDI chip is reprogrammed to support its maximum baud rate of 12 Mbaud. At 12 Mbaud, 
+the effective data rate is 1.2 Mbytes/s, while some TRNGs are capable of up to 400 Mbytes/s. Therefore, the fundamental
+problem becomes one of throughput; for some types of analysis, up to a million samples need to be collected, and many 
+FPGAs do not have enough in-chip memory to store the amount of samples necessary. Therefore, the FIFO needs to be 
+directed not towards the UART interface but rather towards another downstream memory component, often a RAM interface.
+
+Our platform, named TRNG Testbed, thus aims to do the following:
+\begin{enumerate}
+    \item Provide a standard interface to all entropy sources, so that testing and integration is seamless both with 
+        this platform and any future platform.
+    \item Provide a parameterized IP core to allow guided instantiation of supported entropy sources.
+    \item Leverage industry-standard interfaces to make IP core compatible with modern platforms.
+    \item Provide an example platform roughly equivalent to existing test platforms with extensions to support further testing and analysis.
+\end{enumerate} 
+
+The TRNG Testbed IP core provides several configuration options at synthesis-time and at run-time. Firstly, a 
+configurable number of different types of supported entropy sources can be instantiated through the top level generics.
+By making the entropy source lineup configurable, users can instantiate several different types of entropy sources,
+or several copies of the same entropy source. This design choice gives users the freedom to perform side-by-side comparison 
+between two different entropy sources in a given build, or identifying the upper and lower bound of performance for a 
+sample set  of the entropy source. In addition, the IP core allows selection of desired clock frequency. Several 
+TRNGs have a range of clock frequencies the source authors have identified as optimal, thus the dynamic selection of clock 
+frequency has the added benefit of providing local, per-entropy-source optimization, as well as the ability to characterize 
+the entropy source over a range of frequencies.
+
+Further, the IP core is designed for integration into a processor-based system on FPGA. The vast majority of TRNG 
+applications are within processor-based designs, usually as a part of an algorithm such as key generation within 
+cryptography like ML-KEM, simulations of random phenomena, etc. As a result, the IP core TRNG Testbed is designed with 
+an AXI4 Lite interface, maintaining compatibility with AMD Vivado block design workflow. Additionally, because the 
+TRNG Testbed is designed for entropy source instrumentation, an additional master AXI interface was added in order to 
+provide a direct memory access (DMA) feature, allowing the TRNG Testbed to write a configurable number of samples into a
+downstream memory region for readout and use by a processor.
+
+\subsection{Analysis}
+
+Many analysis techniques exist and are commonly used throughout the literature to evaluate TRNGs. Often, publications 
+proposing new TRNG architectures often present their results in reference to a suite of different mathematical 
+evaluation tools, such as DIEHARD and DIEHARDER, NIST SP800-22 and -90b, and AIS-20/31 to name a few. Petura et. al. 
+present a collection of TRNGs that meet AIS-20/31 specification, while Pebay-Peroula et. al. implement their own analysis
+techniques in Python. Meanwhile several new TRNG architecture proposals use the NIST SP800-90b tests.
+
+% Discuss what all entropy assessment tools are used in this paper. We should integrate the NIST tests into a pybind11 
+% implementation, thereby allowing us to use their source code directly. We should also integrate Pebay-Peroula et. al.'s 
+% analysis for use with our platform.
+
+
+\input{sp800-90b.tex}

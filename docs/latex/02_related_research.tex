@@ -1,0 +1,54 @@
+\section{Related Research}
+
+In our research, we found that the terms "true random number generators (TRNGs)" and "entropy sources" were
+often used interchangably. NIST's publication SP800-90a, -90b, and -90c discuss requirements and recommendations 
+of sources of random bits, ranging from deterministic random bit generators (DRBGs), entropy sources, and random 
+bit generators (RBGs). Meanwhile, AIS 20/31 uses the terminology deterministic random number generators (DRNGs), 
+physical true random number generators (PTRNGs) and non-physical true random number generators (NPTRNGs). 
+Additionally, DRBGs are often colloquially referred to pseudorandom number generators (PRNGs), and in the 
+literature entropy sources are frequently colloquially referred to as true random number generators (TRNGs). 
+As a result, we also refer to entropy sources as both entropy sources and TRNGs interchangably; however, in an 
+analysis context especially with respect to NIST SP800-90b, we will use the terminology of "entropy source".
+
+As part of the same philosophy and resulting movement promoting security through transparency, several publications 
+have already made significant progress into catalogging and evaluating ring oscillator (RO) based TRNGs. Petura 
+et. al. produced a catalog of six TRNGs, providing metrics for each for area, power consumption, entropy, efficiency, 
+bit rate, and feasibility and repeatability. These metrics both indicate to users the potential of these entropy 
+sources, while also indicating their pitfalls. Several of these entropy sources had relatively low bit rate 
+($<$ 1 Mbits/s) which limits integration in high-end cryptographic platforms, while others consumed significant area, 
+which limits integration in low-end microcontroller and tiny cryptographic platforms. Petura et. al. also provided a
+reliability/feasibility score given to each TRNG, with a higher score indicating easily repeatable across devices, or
+within different portions of a device, while lower scores indicated that increasing effort needed to be done to produce
+repeatable results.
+
+The catalog of TRNGs with their corresponding metrics provided a brochure-like approach of various proofs of concept,
+informing the community of the pros and cons of the various TRNGs provided. The next natural step is to determine which 
+TRNG suits a given application; in other words, which TRNG needs to evolve from a proof of concept to a prototype.
+Pebay-Peroula et. al. took three of these TRNGs and built an evaluation platform and a set of Python analysis tools 
+around them. The authors created a UART-based sampling structure that included components such as alarms and conditioning
+units, creating a model implementation of a full TRNG prototype. 
+
+The natural extension to the work of Petura et. al. and Pebay-Peroula et. al. is to provide more emulation, more 
+hardware, and more analysis. The sample size of six predominantly ring-oscillator based TRNGs does not cover the 
+full berth of existing research. Several other researched sources of entropy exist; metastable circuits are arguably 
+one of the most widely experienced entropy sources, in that students learn early in their careers that setup and
+hold violations and clock domain crossings that lead to metastability will turn their homework into random number 
+generators.
+
+In addition to metastability as an entropy source, chaos is often quoted as another source for entropy. Chaos has
+made inroads into the hardware security space due to its intrinsic parallelism with cryptography and the promise of
+physical uniqueness and entropy amplification, but many have created slow and insecure cryptographic primitives 
+in a search for a crossing point, as Kocarev discusses in []. However, chaos has shown significant promise in the 
+field of physically unclonable functions (PUFs) as well as in TRNGs. Work by Jiteurtragool et. al. created a simulated 
+chaotic oscillator TRNG designed for an ASIC, where they leverage a unique transistor layout to create an inverse tent 
+map, thereby stretching and compressing voltage activity to create a chaotic map []. Other papers have proposed unique 
+topologies for coupling gates into autonomous boolean networks (ABNs) to produce high switching activity, such as 
+Rosin, Lu et. al., and Addabbo et. al. 
+
+Pebay-Peroula et. al. also contributed a significant step for the open-source community by both creating the foundational 
+tools necessary to reduce barrier to entry, as well as philosophically establishing three core pillars to open source 
+TRNG development. Emulation, hardware, and analysis are three key pillars that provide the community at large with the 
+tools to understand, test, and evaluate TRNGs. Emulation informs understanding, hardware supports testing, and analysis 
+inspires confidence; emulation and modeling of the physical source of entropy conveys the concept component demonstrated in
+the hardware proof of concept while the analysis informs how well the proof of concept performs against theory. Providing
+the implementation without the supporting model and analysis does not fully reduce the barrier to access. 

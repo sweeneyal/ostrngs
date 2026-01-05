@@ -24,10 +24,13 @@ vu.add_osvvm()
 # these tests, as Xilinx primitives are used in some entities.
 vu.add_external_library("unisim", os.environ['XILINX_UNISIM_PATH'])
 
-ndsmd = vu.add_library("ostrngs")
+hector = vu.add_library("hector_trng_designs")
+hector.add_source_file('./libraries/hector_trng_designs/COSO-TRNG/VHDL/shared/RO_core.vhd')
+
+ostrngs = vu.add_library("ostrngs")
 files = get_vhdl_files('./hdl/rtl', recursive=True)
 for file in files:
-    ndsmd.add_source_file(file)
+    ostrngs.add_source_file(file)
 
 tb = vu.add_library("tb_ostrngs")
 files = get_vhdl_files('./hdl/tb', recursive=True)

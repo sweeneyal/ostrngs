@@ -46,6 +46,8 @@ optproc ::ostrngs::import_sources {{mode "project"}} {
             $ostrngs::home/hdl/rtl/Core/TrngTestbedCore.vhd
             $ostrngs::home/hdl/rtl/EntropySources/DigitalNonlinearOscillator/DigitalNonlinearOscillator.vhd
             $ostrngs::home/hdl/rtl/EntropySources/DigitalNonlinearOscillator/DnoTrng.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/HECTOR/CosoTrng/CosoTrng.vhd
+            $ostrngs::home/hdl/rtl/EntropySources/HECTOR/EroTrng/EroTrng.vhd
             $ostrngs::home/hdl/rtl/EntropySources/HybridFfsrTrng/DynamicSampler.vhd
             $ostrngs::home/hdl/rtl/EntropySources/HybridFfsrTrng/EntropyInjector.vhd
             $ostrngs::home/hdl/rtl/EntropySources/HybridFfsrTrng/FeedforwardShiftRegister.vhd
