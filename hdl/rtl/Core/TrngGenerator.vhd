@@ -467,6 +467,50 @@ begin
 
         end generate gRoLdceTrng;
 
+        -- Synthesizable test counter that increments once per clock cycle
+        gTestSource: if (cEntropySources(g_ii) = padded("Test", 256)) generate
+            signal local_rng    : unsigned(8 * cDataWidth_B - 1 downto 0) := (others => '1');
+            signal local_resetn : std_logic := '0';
+        begin
+
+            RngResetnPulseExtender: process(rng_clk, i_resetn, i_rng_enable(g_ii))
+                variable timer : natural range 0 to 2 := 2;
+            begin
+                if ((i_resetn and i_rng_enable(g_ii)) = '0') then
+                    local_resetn <= '0';
+                    timer := 2;
+                elsif rising_edge(rng_clk) then
+                    if (timer = 0) then
+                        local_resetn <= '1';
+                    else
+                        timer := timer - 1;
+                    end if;
+                end if;
+            end process RngResetnPulseExtender;
+
+            TestCounter: process(i_clk)
+            begin
+                if rising_edge(i_clk) then
+                    if (local_resetn = '0') then
+                        -- Reset to all '1's so first valid output is all '0's
+                        local_rng <= (others => '1');
+                        rng_dvalid(g_ii) <= '0';
+                    else
+                        local_rng <= local_rng + 1;
+                        rng_dvalid(g_ii) <= '1';
+                    end if;
+                end if;
+            end process TestCounter;
+
+            -- Makes a constant select value to be selected by the i_rng_addr bus to the mux.
+            sel(g_ii) <= std_logic_vector(to_unsigned(0, cNumClocks - 1));
+
+            -- Resize the random sample to fit into the o_rng_data bus.
+            rng(g_ii) <= std_logic_vector(local_rng);
+
+        end generate gTestSource;
+
+        -- Nonsynthesizable simulated entropy source that allows sim testing with randomness.
         gNonSynth: if (cEntropySources(g_ii) = padded("Simulation", 256)) generate
             signal local_resetn : std_logic;
         begin
