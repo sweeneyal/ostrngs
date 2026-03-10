@@ -12,12 +12,17 @@ library ieee;
     use ieee.std_logic_1164.all;
     use ieee.numeric_std.all;
 
+library unisim;
+    use unisim.vcomponents.all;
+
 library ostrngs;
 
 entity OpenLoopMetaTrng is
     generic (
         cSimFineDelay_ps   : natural := 50;
-        cSimCoarseDelay_ps : natural := 100
+        cSimCoarseDelay_ps : natural := 100;
+        cNumCoarseStages   : natural := 64;
+        cNumFineStages     : natural := 16
     );
     port (
         i_clk    : in std_logic;
@@ -28,20 +33,27 @@ entity OpenLoopMetaTrng is
 end entity OpenLoopMetaTrng;
 
 architecture rtl of OpenLoopMetaTrng is
-    constant cNumFineStages   : natural := 64;
-    constant cNumCoarseStages : natural := 64;
+    -- constant cNumFineStages   : natural := 16;
+    constant cNumFineBits     : natural := cNumFineStages * 4;
+    -- constant cNumCoarseStages : natural := 64;
 
-    signal c       : std_logic_vector(cNumFineStages downto 0) := (others => '0');
-    signal d       : std_logic_vector(cNumFineStages downto 0) := (others => '0');
-    signal d_latch : std_logic_vector(cNumFineStages - 1 downto 0) := (others => '0');
-    signal d_reg   : std_logic_vector(cNumFineStages - 1 downto 0) := (others => '0');
+    signal c_init : std_logic := '0';
+    signal d_init : std_logic := '0';
+
+    signal carries_c       : std_logic_vector(cNumFineBits - 1 downto 0) := (others => '0');
+    signal carries_c_delay : std_logic_vector(cNumFineBits - 1 downto 0) := (others => '0');
+    signal carries_d       : std_logic_vector(cNumFineBits - 1 downto 0) := (others => '0');
+    signal carries_d_delay : std_logic_vector(cNumFineBits - 1 downto 0) := (others => '0');
+
+    signal d_latch : std_logic_vector(cNumFineBits - 1 downto 0) := (others => '0');
+    signal d_reg   : std_logic_vector(cNumFineBits - 1 downto 0) := (others => '0');
     signal merge_d : std_logic := '0';
 
     signal ctrc : std_logic_vector(cNumCoarseStages - 1 downto 0) := (others => '0');
     signal ctrd : std_logic_vector(cNumCoarseStages - 1 downto 0) := (others => '0');
-    type counter_array_t is array (0 to cNumFineStages - 1) of unsigned(7 downto 0);
+    type counter_array_t is array (0 to cNumFineBits - 1) of unsigned(7 downto 0);
     signal counters : counter_array_t  := (others => (others => '0'));
-    signal health_reg : natural range 0 to cNumFineStages := 0;
+    signal health_reg : natural range 0 to cNumFineBits := 0;
 
     type state_t is (RESET, ACTIVE);
     signal state : state_t := ACTIVE;
@@ -50,8 +62,8 @@ architecture rtl of OpenLoopMetaTrng is
     constant cLowerBound : natural := 128 - 50;
 
     attribute DONT_TOUCH : string;
-    attribute DONT_TOUCH of c : signal is "true";
-    attribute DONT_TOUCH of d : signal is "true";
+    attribute DONT_TOUCH of carries_c : signal is "true";
+    attribute DONT_TOUCH of carries_d : signal is "true";
 begin
     
     eCascade : entity ostrngs.CoarseCascade
@@ -62,25 +74,70 @@ begin
         i_clk  => i_clk,
         i_ctrc => ctrc,
         i_ctrd => ctrd,
-        o_c    => c(0),
-        o_d    => d(0)
+        o_c    => c_init,
+        o_d    => d_init
     );
 
-    gFineDelayGeneration: for g_ii in 0 to cNumFineStages - 1 generate
-        
-        c(g_ii + 1) <= transport c(g_ii) after cSimFineDelay_ps * 1 ps;
-        d(g_ii + 1) <= transport d(g_ii) after cSimFineDelay_ps * 1 ps;
+    eFirstCarry_D : CARRY4
+    port map (
+        CI     => '0',
+        CYINIT => d_init,
+        CO     => carries_d(3 downto 0),
+        O      => open,
+        DI     => "0000",
+        S      => "1111"
+    );
 
-        SampleLatches: process(i_resetn, c(g_ii))
+    eFirstCarry_C : CARRY4
+    port map (
+        CI     => '0',
+        CYINIT => c_init,
+        CO     => carries_c(3 downto 0),
+        O      => open,
+        DI     => "0000",
+        S      => "1111"
+    );
+
+    gFineDelayGeneration: for g_ii in 1 to cNumFineStages - 1 generate
+        eCarry_D : CARRY4
+        port map (
+            CI     => carries_d(4 * (g_ii - 1) + 3),
+            CYINIT => '0',
+            CO     => carries_d(4 * g_ii + 3 downto 4 * g_ii),
+            O      => open,
+            DI     => "0000",
+            S      => "1111"
+        );
+
+        eCarry_C : CARRY4
+        port map (
+            CI     => carries_c(4 * (g_ii - 1) + 3),
+            CYINIT => '0',
+            CO     => carries_c(4 * g_ii + 3 downto 4 * g_ii),
+            O      => open,
+            DI     => "0000",
+            S      => "1111"
+        );
+    end generate gFineDelayGeneration; 
+
+    SimulateDelay: process(carries_c, carries_d)
+    begin
+        for ii in 0 to cNumFineBits - 1 loop
+            carries_d_delay(ii) <= transport carries_d(ii) after (ii + 1) * cSimFineDelay_ps * 1 ps;
+            carries_c_delay(ii) <= transport carries_c(ii) after (ii + 1) * cSimFineDelay_ps * 1 ps;
+        end loop;
+    end process SimulateDelay;
+
+    gSampleLatches: for g_ii in 0 to cNumFineBits - 1 generate
+        SampleLatches: process(i_resetn, carries_c_delay)
         begin
             if (i_resetn = '0') then
                 d_latch(g_ii) <= '0';
-            elsif (c(g_ii) = '0') then
-                d_latch(g_ii) <= d(g_ii);
+            elsif (carries_c_delay(g_ii) = '0') then
+                d_latch(g_ii) <= carries_d_delay(g_ii);
             end if;
         end process SampleLatches;
-
-    end generate gFineDelayGeneration; 
+    end generate gSampleLatches;
 
     SamplingFlops: process(i_clk)
     begin
@@ -101,8 +158,8 @@ begin
         variable ctrc_bit   : natural range 0 to cNumCoarseStages - 1 := 0;
         variable ctrd_bit   : natural range 0 to cNumCoarseStages - 1 := 0;
         variable timer      : natural range 0 to 255 := 255;
-        variable health     : natural range 0 to cNumFineStages := 0;
-        variable max_health : natural range 0 to cNumFineStages := 0;
+        variable health     : natural range 0 to cNumFineBits := 0;
+        variable max_health : natural range 0 to cNumFineBits := 0;
         variable max_ctrc   : std_logic_vector(cNumCoarseStages - 1 downto 0) := (others => '0');
         variable max_ctrd   : std_logic_vector(cNumCoarseStages - 1 downto 0) := (others => '0');
     begin
@@ -153,6 +210,7 @@ begin
                                 ctrd_bit := ctrd_bit + 1;
                             else
                                 ctrd_bit := 0;
+                                ctrd <= (others => '0');
                                 if (ctrc_bit < cNumCoarseStages - 1) then
                                     ctrc_bit := ctrc_bit + 1;
                                 else
