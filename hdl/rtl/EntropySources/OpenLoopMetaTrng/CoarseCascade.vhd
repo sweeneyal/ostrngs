@@ -36,12 +36,12 @@ architecture rtl of CoarseCascade is
 begin
     
     -- Make this synthesizable. Only know how to force this to be a LUT with a DONT_TOUCH
-    c(0) <= transport i_clk after cSimulatedDelay_ps * 1 ps;
-    d(0) <= transport i_clk after cSimulatedDelay_ps * 1 ps;
+    c(0) <= i_clk;
+    d(0) <= i_clk;
 
     gCascade: for g_ii in 0 to cNumStages - 1 generate
 
-        Mux21_Clk: process(i_ctrc(g_ii), c(g_ii), i_clk)
+        Mux21_Clk: process(i_ctrc, c, i_clk)
         begin
             if (i_ctrc(g_ii) = '0') then
                 c(g_ii + 1) <= transport c(g_ii) after cSimulatedDelay_ps * 1 ps;
@@ -50,7 +50,7 @@ begin
             end if;            
         end process Mux21_Clk;
 
-        Mux21_Data: process(i_ctrd(g_ii), d(g_ii), i_clk)
+        Mux21_Data: process(i_ctrd, d, i_clk)
         begin
             if (i_ctrd(g_ii) = '0') then
                 d(g_ii + 1) <= transport d(g_ii) after cSimulatedDelay_ps * 1 ps;

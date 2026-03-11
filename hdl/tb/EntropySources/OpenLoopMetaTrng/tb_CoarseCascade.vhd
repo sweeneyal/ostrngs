@@ -35,6 +35,8 @@ begin
     );
     
     TestRunner : process
+        variable tic : time;
+        variable toc : time;
     begin
         test_runner_setup(runner, runner_cfg);
   
@@ -42,25 +44,41 @@ begin
             if run("t_coarsecascade_demo") then
                 info("Checking that each coarse delay chain works as expected for a simulated 100 ps delay.");
                 for ii in 0 to cNumStages - 1 loop
+                    ctrd <= (others => '0');
+                    wait for 1 fs;
                     for jj in 0 to cNumStages - 1 loop
                         info("Running iteration (ii, jj): (" & natural'image(ii) & ", " & natural'image(jj) & ")");
                         info("> ctrc = " & to_hstring(ctrc));
                         info("> ctrd = " & to_hstring(ctrd));
                         wait until rising_edge(clk);
-                        if ii <= jj then
-                            wait for 100 ps * ii;
-                            wait for 1 fs;
-                            check(c = '1');
-                            wait for 100 ps * (jj - ii);
-                            wait for 1 fs;
-                            check(d = '1');
+                        if ii >= jj then
+                            wait until c = '1';
+                            tic := now;
+                            if (d /= '1') then
+                                wait until d = '1';
+                            end if;
+                            toc := now;
+                            report real'image((real(toc / 1 ps) - real(tic / 1 ps))/ 1000.0);
+                            report real'image((1.05 * real(ii - jj) * 0.100));
+                            report real'image((0.95 * real(ii - jj) * 0.100));
+                            check((real(toc / 1 ps) - real(tic / 1 ps))/ 1000.0 <= (1.05 * real(ii - jj) * 0.100), 
+                                "-> Failed ii <= jj; time delta is greater than 1.05.");
+                            check((real(toc / 1 ps) - real(tic / 1 ps))/ 1000.0 >= (0.95 * real(ii - jj) * 0.100), 
+                                "-> Failed ii <= jj; time delta is less than 0.95.");
                         else
-                            wait for 100 ps * jj;
-                            wait for 1 fs;
-                            check(d = '1');
-                            wait for 100 ps * (ii - jj);
-                            wait for 1 fs;
-                            check(c = '1');
+                            wait until d = '1';
+                            tic := now;
+                            if (c /= '1') then
+                                wait until c = '1';
+                            end if;
+                            toc := now;
+                            report real'image((real(toc / 1 ps) - real(tic / 1 ps))/ 1000.0);
+                            report real'image((1.05 * real(jj - ii) * 0.100));
+                            report real'image((0.95 * real(jj - ii) * 0.100));
+                            check((real(toc / 1 ps) - real(tic / 1 ps))/ 1000.0 <= (1.05 * real(jj - ii) * 0.100), 
+                                "-> Failed ii > jj; time delta is greater than 1.05.");
+                            check((real(toc / 1 ps) - real(tic / 1 ps))/ 1000.0 >= (0.95 * real(jj - ii) * 0.100), 
+                                "-> Failed ii > jj; time delta is less than 0.95.");
                         end if;
     
                         ctrd(jj) <= '1';
