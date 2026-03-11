@@ -15,9 +15,11 @@ entity DnoTrng is
 end entity DnoTrng;
 
 architecture rtl of DnoTrng is
-    signal taps  : std_logic_vector(0 to 2);
-    signal tapsd : std_logic_vector(0 to 2);
+    signal taps   : std_logic_vector(0 to 2);
+    signal tapsd0 : std_logic_vector(0 to 2);
+    signal tapsd  : std_logic_vector(0 to 2);
     signal ro : std_logic_vector(2 downto 0) := (others => '0');
+    signal valid : std_logic;
 
     attribute ALLOW_COMBINATORIAL_LOOPS : string;
     attribute ALLOW_COMBINATORIAL_LOOPS of ro : signal is "true";
@@ -53,11 +55,15 @@ begin
     TapsFlops: process(i_clk)
     begin
         if (i_resetn = '0') then
-            tapsd <= (others => '0');
+            tapsd0  <= (others => '0');
+            tapsd   <= tapsd0;
             o_valid <= '0';
+            valid   <= '0';
         elsif rising_edge(i_clk) then
-            tapsd <= taps;
-            o_valid <= '1';
+            tapsd0  <= taps;
+            tapsd   <= tapsd0;
+            valid   <= '1';
+            o_valid <= valid;
         end if;
     end process TapsFlops;
 

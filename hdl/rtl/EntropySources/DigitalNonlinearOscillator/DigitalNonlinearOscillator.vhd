@@ -35,8 +35,8 @@ architecture rtl of DigitalNonlinearOscillator is
 
     attribute RLOC : string;
     attribute RLOC of x : signal is "X0Y0";
-    attribute RLOC of y : signal is "X0Y1";
-    attribute RLOC of z : signal is "X0Y2";
+    attribute RLOC of y : signal is "X0Y0";
+    attribute RLOC of z : signal is "X0Y0";
 begin
     
     x <= i_resetn and (x_delay0 xor z_delay0);

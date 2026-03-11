@@ -62,6 +62,8 @@ architecture rtl of OpenLoopMetaTrng is
     constant cLowerBound : natural := 128 - 50;
 
     attribute DONT_TOUCH : string;
+    attribute DONT_TOUCH of c_init    : signal is "true";
+    attribute DONT_TOUCH of d_init    : signal is "true";
     attribute DONT_TOUCH of carries_c : signal is "true";
     attribute DONT_TOUCH of carries_d : signal is "true";
 begin
@@ -187,7 +189,7 @@ begin
                         else
                             timer := 255;
 
-                            for ii in 0 to cNumFineStages - 1 loop
+                            for ii in 0 to cNumFineBits - 1 loop
                                 if (counters(ii) < cUpperBound and counters(ii) > cLowerBound) then
                                     health := health + 1;
                                 end if;
@@ -227,7 +229,7 @@ begin
                             health := 0;
                             timer  := timer - 1;
                             
-                            for ii in 0 to cNumFineStages - 1 loop
+                            for ii in 0 to cNumFineBits - 1 loop
                                 if (d_reg(ii) = '1') then
                                     counters(ii) <= counters(ii) + 1;
                                 end if;
@@ -235,7 +237,7 @@ begin
                         else
                             timer := 255;
 
-                            for ii in 0 to cNumFineStages - 1 loop
+                            for ii in 0 to cNumFineBits - 1 loop
                                 if (counters(ii) < cUpperBound and counters(ii) > cLowerBound) then
                                     health := health + 1;
                                 end if;
@@ -253,7 +255,7 @@ begin
         variable sum : std_logic;
     begin
         sum := d_reg(0);
-        for ii in 1 to cNumFineStages - 1 loop
+        for ii in 1 to cNumFineBits - 1 loop
             sum := sum xor d_reg(ii);
         end loop;
         merge_d <= sum;

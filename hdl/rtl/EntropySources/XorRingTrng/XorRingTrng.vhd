@@ -16,6 +16,8 @@ architecture rtl of XorRingTrng is
 
     signal xor_net : std_logic_vector(15 downto 0) := (others => '0');
     signal ffs     : std_logic_vector(3 downto 0) := (others => '0');
+    signal ffs_s0  : std_logic_vector(3 downto 0) := (others => '0');
+    signal valid   : std_logic := '0';
 
     attribute ALLOW_COMBINATORIAL_LOOPS : string;
     attribute ALLOW_COMBINATORIAL_LOOPS of xor_net : signal is "true";
@@ -55,13 +57,17 @@ begin
     SamplingFlops: process(i_clk)
     begin
         if (i_resetn = '0') then
-            ffs   <= (others => '0');
+            ffs_s0  <= (others => '0');
+            ffs     <= (others => '0');
+            valid   <= '0';
             o_valid <= '0';
         elsif rising_edge(i_clk) then
             for ii in 0 to 3 loop
-                ffs(ii) <= xor_net(4 * ii);
+                ffs_s0(ii) <= xor_net(4 * ii);
             end loop;
-            o_valid <= '1';
+            ffs <= ffs_s0;
+            valid   <= '1';
+            o_valid <= valid;
         end if;
     end process SamplingFlops;
 

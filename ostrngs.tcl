@@ -77,5 +77,8 @@ optproc ::ostrngs::import_sources {{mode "project"}} {
 
         set_property file_type {VHDL 2008} [get_files AxiCrossbar.vhd]
         set_property file_type {VHDL 2008} [get_files TrngGenerator.vhd]
+
+        add_files -fileset utils_1 -norecurse $ostrngs::home/tcl/ostrngs_prerouter.tcl
+        set_property STEPS.ROUTE_DESIGN.TCL.PRE [get_files {$ostrngs::home/tcl/ostrngs_prerouter.tcl} -of [get_fileset utils_1]] [get_runs impl_1]
     }
 }
