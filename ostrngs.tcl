@@ -80,5 +80,6 @@ optproc ::ostrngs::import_sources {{mode "project"}} {
 
         add_files -fileset utils_1 -norecurse $ostrngs::home/tcl/ostrngs_prerouter.tcl
         set_property STEPS.ROUTE_DESIGN.TCL.PRE [get_files {$ostrngs::home/tcl/ostrngs_prerouter.tcl} -of [get_fileset utils_1]] [get_runs impl_1]
+        set_property -name {STEPS.ROUTE_DESIGN.ARGS.MORE OPTIONS} -value -preserve -objects [get_runs impl_1]
     }
 }

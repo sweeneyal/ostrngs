@@ -125,6 +125,7 @@ begin
 
     StateMachine: process(i_clk)
         variable seq : std_logic_vector(2 downto 0) := "000";
+        variable timeout : natural range 0 to cClockFrequency_Hz := 0;
     begin
         if rising_edge(i_clk) then
             if (i_resetn = '0') then
@@ -139,6 +140,7 @@ begin
 
                 tx_valid <= '0';
                 idx      <= 0;
+                timeout  := 0;
             else
                 case state is
                     when IDLE =>
@@ -151,12 +153,19 @@ begin
 
                         if (rx_valid = '1') then
                             packet(7 downto 0) <= rx_data;
-                            sum   <= unsigned(rx_data);
-                            state <= RECEIVE_PACKET;
-                            idx   <= 1;
+                            sum     <= unsigned(rx_data);
+                            state   <= RECEIVE_PACKET;
+                            idx     <= 1;
+                            timeout := cClockFrequency_Hz;
                         end if;
 
                     when RECEIVE_PACKET =>
+                        if (timeout > 0) then
+                            timeout := timeout - 1;
+                        else
+                            state <= ACK_ERROR;
+                        end if;
+
                         if (rx_valid = '1') then
                             packet(8 * idx + 7 downto 8 * idx) <= rx_data;
                             idx <= idx + 1;

@@ -9,4 +9,3 @@ route_design -nets [get_nets system_i/TrngTestbed_0/inst/eCore/eSandbox/eTrngs/g
 route_design -nets [get_nets -of_objects [get_cells system_i/TrngTestbed_0/inst/eCore/eSandbox/eTrngs/gEntropySourceInstantiation[5].gHybridFfsrTrng.eHybridFfsrTrng/e*]]
 route_design -nets [get_nets -of_objects [get_cells system_i/TrngTestbed_0/inst/eCore/eSandbox/eTrngs/gEntropySourceInstantiation[6].gLwxnorTrng.eLwxnorTrng/gLwxnors[*].e*]]
 route_design -nets [get_nets -of_objects [get_cells system_i/TrngTestbed_0/inst/eCore/eSandbox/eTrngs/gEntropySourceInstantiation[7].gRoLdceTrng.eRoLdceTrng/gRoLdces[*].e*]]
-set_property -name {STEPS.ROUTE_DESIGN.ARGS.MORE OPTIONS} -value -preserve -objects [get_runs impl_1]

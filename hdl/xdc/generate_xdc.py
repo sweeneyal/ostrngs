@@ -3,6 +3,7 @@ import sys
 sys.path.append('./python')
 
 from ostrngs.hw.xdc import Platform, Routing
+from ostrngs.hw.ap import Area, scatter
 
 TOP_ENTITY      = "system_i"
 TRNG_TESTBED    = TOP_ENTITY + "/TrngTestbed_0"
@@ -29,18 +30,30 @@ source_sizes = [
     (1,4),
     (1,2),
     (3,3),
-    (2,2),
-    (2,2)
+    (3,3),
+    (3,3)
 ]
 
-X_START_PLACEMENT = 12
-X_SPACING         = 8
-Y_LINE_PLACEMENT  = 5
+X_MIN = 12
+Y_MIN = 5
+X_MAX = 76
+Y_MAX = 49
+
+coords = []
+space = Area(X_MIN, X_MAX, Y_MIN, Y_MAX)
+
+for size in source_sizes:
+    next_coord = scatter(space, size[0], size[1])
+    if next_coord is not None:
+        coords.append(next_coord)
+        print(next_coord)
+    else:
+        raise Exception
 
 for id, source, size in zip(range(len(entropy_sources)), entropy_sources, source_sizes):
     pb = f"p_source{id}_{source}"
     if source == "MeshCoupledXor":
-        p.allocate_pblock(pb, size, point=(X_START_PLACEMENT + id * X_SPACING, Y_LINE_PLACEMENT), soft=False, contain_routing=True)
+        p.allocate_pblock(pb, size, point=(coords[id][0], coords[id][1]), soft=False, contain_routing=True, exclusion=True)
         p.add_module_to_pblock(pb,
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gMeshCoupledXor.eMeshCoupledXor/e*")
@@ -48,7 +61,7 @@ for id, source, size in zip(range(len(entropy_sources)), entropy_sources, source
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gMeshCoupledXor.eMeshCoupledXor/*")
     elif source == "OpenLoopMetaTrng":
-        p.allocate_pblock(pb, size, point=(X_START_PLACEMENT + id * X_SPACING, Y_LINE_PLACEMENT),soft=False, contain_routing=True)
+        p.allocate_pblock(pb, size, point=(coords[id][0], coords[id][1]),soft=False, contain_routing=True, exclusion=True)
         p.add_module_to_pblock(pb, 
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gOpenLoopMetaTrng.eOpenLoopMeta/eFirstCarry_C")
@@ -69,6 +82,28 @@ for id, source, size in zip(range(len(entropy_sources)), entropy_sources, source
             ".gOpenLoopMetaTrng.eOpenLoopMeta/eCascade/*")
         
         # Add macro to make d_latch_regs align with carry chain.
+        cells = []
+        rlocs = []
+        for carry in range(1, 16):
+            cells.append(
+                TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
+                f".gOpenLoopMetaTrng.eOpenLoopMeta/gFineDelayGeneration[{carry}].eCarry_C")
+            rlocs.append(f"X0Y{carry}")
+            cells.append(
+                TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
+                f".gOpenLoopMetaTrng.eOpenLoopMeta/gFineDelayGeneration[{carry}].eCarry_D")
+            rlocs.append(f"X2Y{carry}")
+            for latch in range(4):
+                cells.append(
+                    TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
+                    f".gOpenLoopMetaTrng.eOpenLoopMeta/gSampleLatches[{4 * (carry - 1) + latch}].d_latch_reg[{4 * (carry - 1) + latch}]")
+                rlocs.append(f"X2Y{(carry - 1)}")
+
+        p.add_macro(f"m0_source{id}_{source}", cells, rlocs)
+
+        p.set_false_path(path_thru=
+            TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
+            ".gOpenLoopMetaTrng.eOpenLoopMeta/eFirstCarry_C/CYINIT")
 
         r.add_to_preroute(
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
@@ -80,7 +115,7 @@ for id, source, size in zip(range(len(entropy_sources)), entropy_sources, source
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gOpenLoopMetaTrng.eOpenLoopMeta/d_init")
     elif source == "LwxnorLutTrng":
-        p.allocate_pblock(pb, size, point=(X_START_PLACEMENT + id * X_SPACING, Y_LINE_PLACEMENT), soft=False, contain_routing=True)
+        p.allocate_pblock(pb, size, point=(coords[id][0], coords[id][1]), soft=False, contain_routing=True, exclusion=True)
         p.add_module_to_pblock(pb,
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gLwxnorLutTrng.eLwxnorLutTrng/gLwxnorLuts[*].e*")
@@ -89,7 +124,7 @@ for id, source, size in zip(range(len(entropy_sources)), entropy_sources, source
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gLwxnorLutTrng.eLwxnorLutTrng/gLwxnorLuts[*].e*")
     elif source == "XorRingTrng":
-        p.allocate_pblock(pb, size, point=(X_START_PLACEMENT + id * X_SPACING, Y_LINE_PLACEMENT), soft=False, contain_routing=True)
+        p.allocate_pblock(pb, size, point=(coords[id][0], coords[id][1]), soft=False, contain_routing=True, exclusion=True)
         p.add_module_to_pblock(pb,
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gXorRingTrng.eXorRingTrng/xor_net*")
@@ -98,7 +133,7 @@ for id, source, size in zip(range(len(entropy_sources)), entropy_sources, source
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gXorRingTrng.eXorRingTrng/xor_net[*]")
     elif source == "DigitalNonlinearOscillator":
-        p.allocate_pblock(pb, size, point=(X_START_PLACEMENT + id * X_SPACING, Y_LINE_PLACEMENT), soft=False, contain_routing=True)
+        p.allocate_pblock(pb, size, point=(coords[id][0], coords[id][1]), soft=False, contain_routing=True, exclusion=True)
         p.add_module_to_pblock(pb,
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gDnoTrng.eDnoTrng/eDno/*")
@@ -113,7 +148,7 @@ for id, source, size in zip(range(len(entropy_sources)), entropy_sources, source
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gDnoTrng.eDnoTrng/ro[*]")
     elif source == "HybridFfsrTrng":
-        p.allocate_pblock(pb, size, point=(X_START_PLACEMENT + id * X_SPACING, Y_LINE_PLACEMENT), soft=False, contain_routing=True)
+        p.allocate_pblock(pb, size, point=(coords[id][0], coords[id][1]), soft=False, contain_routing=True, exclusion=True)
         p.add_module_to_pblock(pb,
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gHybridFfsrTrng.eHybridFfsrTrng/e*")
@@ -122,7 +157,7 @@ for id, source, size in zip(range(len(entropy_sources)), entropy_sources, source
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gHybridFfsrTrng.eHybridFfsrTrng/e*")
     elif source == "LwxnorTrng":
-        p.allocate_pblock(pb, size, point=(X_START_PLACEMENT + id * X_SPACING, Y_LINE_PLACEMENT), soft=False, contain_routing=True)
+        p.allocate_pblock(pb, size, point=(coords[id][0], coords[id][1]), soft=False, contain_routing=True, exclusion=True)
         p.add_module_to_pblock(pb,
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gLwxnorTrng.eLwxnorTrng/gLwxnors[*].e*")
@@ -131,7 +166,7 @@ for id, source, size in zip(range(len(entropy_sources)), entropy_sources, source
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gLwxnorTrng.eLwxnorTrng/gLwxnors[*].e*")
     elif source == "RoLdceTrng":
-        p.allocate_pblock(pb, size, point=(X_START_PLACEMENT + id * X_SPACING, Y_LINE_PLACEMENT), soft=False, contain_routing=True)
+        p.allocate_pblock(pb, size, point=(coords[id][0], coords[id][1]), soft=False, contain_routing=True, exclusion=True)
         p.add_module_to_pblock(pb,
             TRNG_GENERATORS + f"/gEntropySourceInstantiation[{id}]" + 
             ".gRoLdceTrng.eRoLdceTrng/gRoLdces[*].e*")

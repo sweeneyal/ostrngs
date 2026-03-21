@@ -17,3 +17,5 @@ vunit_out
 *.log
 
 .Xil
+
+hd_visual/

@@ -37,6 +37,7 @@ architecture rtl of OpenLoopMetaTrng is
     constant cNumFineBits     : natural := cNumFineStages * 4;
     -- constant cNumCoarseStages : natural := 64;
 
+    signal clk_inv : std_logic := '0';
     signal c_init : std_logic := '0';
     signal d_init : std_logic := '0';
 
@@ -68,12 +69,14 @@ architecture rtl of OpenLoopMetaTrng is
     attribute DONT_TOUCH of carries_d : signal is "true";
 begin
     
+    clk_inv <= not i_clk;
+
     eCascade : entity ostrngs.CoarseCascade
     generic map (
         cNumStages => cNumCoarseStages,
         cSimulatedDelay_ps => cSimCoarseDelay_ps
     ) port map (
-        i_clk  => i_clk,
+        i_clk  => clk_inv,
         i_ctrc => ctrc,
         i_ctrd => ctrd,
         o_c    => c_init,
@@ -135,7 +138,9 @@ begin
         begin
             if (i_resetn = '0') then
                 d_latch(g_ii) <= '0';
-            elsif (carries_c_delay(g_ii) = '0') then
+            -- Only use the 0th bit of each carry chain element, since groups of 
+            -- 4 registers will all be on the same clock.
+            elsif (carries_c_delay(g_ii / 4) = '1') then
                 d_latch(g_ii) <= carries_d_delay(g_ii);
             end if;
         end process SampleLatches;
