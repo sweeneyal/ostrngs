@@ -46,8 +46,8 @@ begin
     x_delay0 <= transport x after 1000 ps;
     x_delay1 <= transport x after 1500 ps;
 
-    y_delay0 <= transport x after 1200 ps;
-    y_delay1 <= transport x after 1400 ps;
+    y_delay0 <= transport y after 1200 ps;
+    y_delay1 <= transport y after 1400 ps;
 
     z_delay0 <= transport z after 1100 ps;
     z_delay1 <= transport z after 1300 ps;
